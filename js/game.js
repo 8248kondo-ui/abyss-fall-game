@@ -656,6 +656,61 @@ class GameScene extends Phaser.Scene {
         this.updateUI();
     }
 
+    drawCircularAmmo() {
+        this.uiGfx.clear();
+        if (this.ammo <= 0) return;
+        const x = this.player.x;
+        const y = this.player.y + 45;
+        const radius = 28;
+        const startRad = -Math.PI / 2;
+        const endRad = startRad + (Math.PI * 2 * (this.ammo / this.maxAmmo));
+
+        this.uiGfx.lineStyle(6, 0x000000, 0.5);
+        this.uiGfx.strokeCircle(x, y, radius);
+        this.uiGfx.lineStyle(4, 0x00ddff, 0.8);
+        this.uiGfx.beginPath();
+        this.uiGfx.arc(x, y, radius, startRad, endRad, false);
+        this.uiGfx.strokePath();
+    }
+
+    updateEnemyWarnings() {
+        this.warnings.clear(true, true);
+        const camBottom = this.cameras.main.scrollY + 1080;
+        this.enemyGroup.children.each(e => {
+            if (e.active && e.y > camBottom && e.y < camBottom + 800) {
+                const warn = this.add.image(e.x, 1040, 'warning').setScrollFactor(0).setDepth(90).setTint(0xff3333);
+                const dist = e.y - camBottom;
+                const alpha = Phaser.Math.Clamp(1 - (dist / 800), 0.2, 1);
+                warn.setAlpha(alpha);
+                if (dist < 300) warn.setScale(1.2 + Math.sin(this.time.now * 0.02) * 0.2);
+            }
+        });
+    }
+
+    resetCombo() {
+        this.combo = 0;
+        this.updateUI();
+    }
+
+    addCombo() {
+        this.combo++;
+        const x = this.player.x + (this.player.facingRight ? -80 : 80);
+        const txt = this.add.text(x, this.player.y - 40, `${this.combo} COMBO!`, {
+            fontSize: '32px', fontFamily: 'Orbitron', color: '#ffdd00', fontStyle: 'bold', stroke: '#000', strokeThickness: 6
+        }).setOrigin(0.5).setDepth(30);
+
+        this.tweens.add({
+            targets: txt,
+            scale: 1.5,
+            angle: Phaser.Math.Between(-10, 10),
+            y: txt.y - 50,
+            alpha: 0,
+            duration: 800,
+            onComplete: () => txt.destroy()
+        });
+        this.updateUI();
+    }
+
     // --- Gun Boot System ---
     shootGunBoot() {
         if (this.ammo <= 0) return;
