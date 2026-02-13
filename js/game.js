@@ -131,48 +131,33 @@ class BootScene extends Phaser.Scene {
     constructor() { super('Boot'); }
     create() {
         const g = this.make.graphics({ x: 0, y: 0, add: false });
-        // Player (2x scale visual)
-        g.clear(); g.fillStyle(0x00ddff); g.fillRoundedRect(0, 0, 48, 64, 8);
-        g.fillStyle(0x0099cc); g.fillRect(8, 12, 12, 12); g.fillRect(28, 12, 12, 12);
-        g.fillStyle(0x00ffff); g.fillRect(12, 16, 4, 4); g.fillRect(32, 16, 4, 4);
-        g.fillStyle(0x0088aa); g.fillRect(13, 50, 22, 10);
-        g.generateTexture('player', 48, 64); g.clear();
-        // Platforms (2x width)
-        g.fillStyle(0x556677); g.fillRoundedRect(0, 0, 160, 32, 6);
-        g.fillStyle(0x667788); g.fillRect(4, 4, 152, 8);
-        g.generateTexture('platform', 160, 32); g.clear();
+        // Player (Reduced to ~0.7x: 32x44)
+        g.clear(); g.fillStyle(0x00ddff); g.fillRoundedRect(0, 0, 32, 44, 6);
+        g.fillStyle(0x0099cc); g.fillRect(6, 10, 8, 8); g.fillRect(18, 10, 8, 8);
+        g.generateTexture('player', 32, 44); g.clear();
+        // Platforms (Optimized for 400w)
+        g.fillStyle(0x556677); g.fillRoundedRect(0, 0, 120, 24, 4);
+        g.generateTexture('platform', 120, 24); g.clear();
         // Spikes
-        g.fillStyle(0xff3333);
-        g.fillTriangle(0, 32, 20, 0, 40, 32);
-        g.fillTriangle(40, 32, 60, 0, 80, 32);
-        g.fillTriangle(80, 32, 100, 0, 120, 32);
-        g.generateTexture('spike', 120, 32); g.clear();
-        // Enemies - Red (larger)
-        g.clear(); g.fillStyle(0xff3333); g.fillCircle(24, 24, 24);
-        g.fillStyle(0xcc0000); g.fillCircle(24, 24, 16);
-        g.fillStyle(0x000000); g.fillCircle(15, 18, 6); g.fillCircle(33, 18, 6);
-        g.generateTexture('enemy_red', 48, 48); g.clear();
-        // Enemies - White
-        g.fillStyle(0xeeeeff); g.fillCircle(24, 24, 24);
-        g.fillStyle(0xccccdd); g.fillCircle(24, 24, 16);
-        g.fillStyle(0x4444aa); g.fillCircle(15, 18, 6); g.fillCircle(33, 18, 6);
-        g.generateTexture('enemy_white', 48, 48); g.clear();
-        // Enemies - Hunter
-        g.fillStyle(0xcc44ff); g.fillCircle(24, 24, 24);
-        g.fillStyle(0x000000); g.fillCircle(15, 15, 8); g.fillCircle(33, 15, 8);
-        g.generateTexture('enemy_hunter', 48, 48); g.clear();
+        g.fillStyle(0xff3333); g.fillTriangle(0, 24, 15, 0, 30, 24); g.fillTriangle(30, 24, 45, 0, 60, 24);
+        g.generateTexture('spike', 60, 24); g.clear();
+        // Enemies (Reduced to 32x32)
+        g.clear(); g.fillStyle(0xff3333); g.fillCircle(16, 16, 16);
+        g.generateTexture('enemy_red', 32, 32); g.clear();
+        g.fillStyle(0xeeeeff); g.fillCircle(16, 16, 16);
+        g.generateTexture('enemy_white', 32, 32); g.clear();
+        g.fillStyle(0xcc44ff); g.fillCircle(16, 16, 16);
+        g.generateTexture('enemy_hunter', 32, 32); g.clear();
         // Warning Icon
         g.lineStyle(4, 0xff0000); g.strokeCircle(20, 20, 18);
         g.fillStyle(0xff0000); g.fillRect(18, 8, 4, 15); g.fillCircle(20, 28, 3);
         g.generateTexture('warning', 40, 40); g.clear();
-        // Bullet (Optimized: 0.5x of player width)
-        g.fillStyle(0xffff00); g.fillCircle(12, 12, 12);
-        g.fillStyle(0xffaa00); g.fillCircle(12, 12, 6);
-        g.generateTexture('bullet', 24, 24); g.clear();
+        // Bullet (0.5x of player, semi-transparent)
+        g.fillStyle(0xffff00, 0.75); g.fillCircle(10, 10, 10);
+        g.generateTexture('bullet', 20, 20); g.clear();
         // Shell casing
-        g.fillStyle(0xddaa44); g.fillRect(0, 0, 4, 8);
-        g.fillStyle(0xbb8833); g.fillRect(0, 0, 4, 2);
-        g.generateTexture('shell', 4, 8); g.clear();
+        g.fillStyle(0xddaa44); g.fillRect(0, 0, 3, 6);
+        g.generateTexture('shell', 3, 6); g.clear();
         // Spark particle
         g.fillStyle(0xffcc00); g.fillCircle(2, 2, 2);
         g.generateTexture('spark', 4, 4); g.clear();
@@ -198,9 +183,9 @@ class BootScene extends Phaser.Scene {
         g.fillStyle(0xffffff); g.fillCircle(4, 4, 4);
         g.generateTexture('particle', 8, 8); g.clear();
         // BG tile
-        g.fillStyle(0x0a0a14); g.fillRect(0, 0, 480, 80);
-        g.lineStyle(1, 0x151525); g.strokeRect(0, 0, 480, 80);
-        g.generateTexture('bg_tile', 480, 80); g.clear();
+        g.fillStyle(0x0a0a14); g.fillRect(0, 0, 400, 80);
+        g.lineStyle(1, 0x151525); g.strokeRect(0, 0, 400, 80);
+        g.generateTexture('bg_tile', 400, 80); g.clear();
         g.destroy();
         this.scene.start('Menu');
     }
@@ -248,40 +233,25 @@ class GameScene extends Phaser.Scene {
     constructor() { super('Game'); }
     create() {
         this.stageHeight = 4500 + GameState.currentStage * 500;
-        this.physics.world.setBounds(0, 0, 480, this.stageHeight);
-        this.cameras.main.setBounds(0, 0, 480, this.stageHeight);
-        this.cameras.main.setBackgroundColor('#0a0a14');
+        this.physics.world.setBounds(0, 0, 400, this.stageHeight);
+        this.cameras.main.setBounds(0, 0, 400, this.stageHeight);
+        this.cameras.main.setBackgroundColor('#000000');
         // BG
         for (let y = 0; y < this.stageHeight; y += 80) {
-            this.add.image(240, y + 40, 'bg_tile').setAlpha(0.5);
-            if (Math.random() < 0.15) {
-                this.add.circle(Phaser.Math.Between(20, 700), y + Phaser.Math.Between(0, 80),
-                    Phaser.Math.Between(1, 3), 0x00ddff, 0.15);
-            }
-        }
-        // Depth indicator
-        for (let y = 0; y < this.stageHeight; y += 400) {
-            this.add.text(700, y, `${Math.floor(y / 30)}m`, { fontSize: '11px', color: '#223344' }).setOrigin(1, 0);
+            this.add.image(200, y + 40, 'bg_tile').setAlpha(0.35);
         }
         // Platforms
         this.platforms = this.physics.add.staticGroup();
         this.spikeGroup = this.physics.add.staticGroup();
         this.generatePlatforms();
         // Goal
-        this.goal = this.physics.add.staticImage(240, this.stageHeight - 100, 'goal').setScale(5, 2.5).refreshBody();
-        this.goal.body.setSize(480, 100).setOffset(-215, -35);
-        this.add.text(240, this.stageHeight - 155, '⬇ FINAL DEPTH ⬇', { fontSize: '24px', color: '#ffdd00', fontStyle: 'bold' }).setOrigin(0.5);
-        // Enemies
-        this.enemyGroup = this.physics.add.group();
-        this.spawnEnemies();
-        // XP orbs
-        this.xpOrbs = this.physics.add.group();
-        // Bullets
-        this.bullets = this.physics.add.group();
+        this.goal = this.physics.add.staticImage(200, this.stageHeight - 100, 'goal').setScale(4, 2).refreshBody();
+        this.goal.body.setSize(400, 100);
         // Player
-        this.player = this.physics.add.sprite(240, 200, 'player');
+        this.player = this.physics.add.sprite(200, 120, 'player');
         this.player.setCollideWorldBounds(true);
-        this.player.body.setGravityY(450 * GameState.getFallMod()); // 1.5x gravity
+        this.player.body.setMaxVelocity(350, 600); // Strict Terminal Velocity
+        this.player.body.setGravityY(500);
         this.player.setDepth(10);
         this.player.hp = GameState.hp;
         this.player.invTime = 0;
@@ -311,10 +281,11 @@ class GameScene extends Phaser.Scene {
         this.offScreenTimer = 0;
 
         // Setup UI Camera
-        this.uiCamera = this.cameras.add(0, 0, 480, 800);
+        this.uiCamera = this.cameras.add(0, 0, 400, 700);
         this.uiCamera.setScroll(0, 0);
         this.uiCamera.setZoom(1);
-        this.cameras.main.ignore([/* List of HUD items if needed, but easier to use camera.ignore on main */]);
+        this.uiCamera.setDepth(100);
+        this.cameras.main.ignore([this.uiContainer, this.uiGfx]);
 
         // Controls
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -327,12 +298,15 @@ class GameScene extends Phaser.Scene {
         this.warnings = this.add.group();
         this.createUI();
 
-        // Final depth text
+        // Safe Zone / Start state
+        this.safeStartTimer = 3.0; // 3 seconds safety
+
+        // Final depth text (200 is center of 400)
         const diffLabel = GameState.getDifficultyLabel();
-        const stTxt = this.add.text(240, 350, `Stage ${GameState.currentStage}\n${diffLabel}`, {
-            fontSize: '42px', fontFamily: 'Orbitron, sans-serif', color: '#00ddff', align: 'center', fontStyle: 'bold'
-        }).setOrigin(0.5).setScrollFactor(0).setDepth(100);
-        this.tweens.add({ targets: stTxt, alpha: 0, y: 580, duration: 2000, delay: 1000, onComplete: () => stTxt.destroy() });
+        const stTxt = this.add.text(200, 350, `Stage ${GameState.currentStage}\n${diffLabel}`, {
+            fontSize: '32px', fontFamily: 'Orbitron, sans-serif', color: '#00ddff', align: 'center', fontStyle: 'bold'
+        }).setOrigin(0.5).setScrollFactor(0).setDepth(150);
+        this.tweens.add({ targets: stTxt, alpha: 0, scale: 1.5, duration: 2000, delay: 1000, onComplete: () => stTxt.destroy() });
 
         // IMPORTANT: Ignore HUD elements on main camera so they only show on UI camera
         this.cameras.main.ignore([this.uiContainer, this.uiGfx]);
@@ -345,19 +319,15 @@ class GameScene extends Phaser.Scene {
         const spacing = Math.max(130, 180 - GameState.getDifficulty() * 12);
         this.addPlatform(360, 140, 3);
         let y = 140 + spacing;
-        while (y < this.stageHeight - 250) {
-            const x = Phaser.Math.Between(60, 420);
-            const spikeChance = 0.18 + GameState.getDifficulty() * 0.06;
+        while (y < this.stageHeight - 400) {
+            const x = Phaser.Math.Between(50, 350);
+            const spikeChance = 0.2;
             if (Math.random() < spikeChance) {
-                this.addSpike(x, y, Phaser.Math.Between(1, 2));
+                this.addSpike(x, y, 1);
             } else {
-                this.addPlatform(x, y, Phaser.Math.Between(1, 3));
+                this.addPlatform(x, y, Phaser.Math.Between(1.2, 2));
             }
-            if (Math.random() < 0.25) {
-                const x2 = Phaser.Math.Between(60, 420);
-                this.addPlatform(x2, y + Phaser.Math.Between(-20, 20), Phaser.Math.Between(1, 2));
-            }
-            y += Phaser.Math.Between(Math.floor(spacing * 0.8), Math.floor(spacing * 1.4));
+            y += Phaser.Math.Between(160, 240); // Increased vertical spacing
         }
         this.addPlatform(360, this.stageHeight - 100, 4);
     }
@@ -379,20 +349,9 @@ class GameScene extends Phaser.Scene {
         const baseRate = 0.6 + diff * 0.15; // Triple density approx
 
         this.platforms.children.iterate(p => {
-            if (p.y < 800 || p.y > this.stageHeight - 200) return; // 800px Safe Zone
-
-            // Pattern 1: Basic probability (Reduced Density)
-            if (Math.random() < baseRate * 0.5) {
-                this.createEnemy(p.x, p.y - 32, Math.random() < 0.4, 'patrol', p);
-            }
-
-            // Pattern 2: Rows of enemies on wider platforms
-            if (p.scaleX > 2 && Math.random() < 0.5) {
-                const count = Math.floor(p.scaleX);
-                for (let i = 0; i < count; i++) {
-                    const offsetX = (i - (count - 1) / 2) * 50;
-                    this.createEnemy(p.x + offsetX, p.y - 32, Math.random() < 0.3, 'patrol', p);
-                }
+            if (p.y < 1000 || p.y > this.stageHeight - 400) return; // 1000px Safe Zone
+            if (Math.random() < 0.35) {
+                this.createEnemy(p.x, p.y - 24, Math.random() < 0.3, 'patrol', p);
             }
         });
 
@@ -469,34 +428,27 @@ class GameScene extends Phaser.Scene {
 
     setupTouchControls() {
         // Left zone
-        const lz = this.add.rectangle(120, 980, 200, 100, 0x00ddff, 0.08).setScrollFactor(0).setDepth(50).setInteractive();
-        this.add.text(120, 980, '◀', { fontSize: '34px', color: '#00ddff' }).setOrigin(0.5).setScrollFactor(0).setDepth(51).setAlpha(0.5);
-        lz.on('pointerdown', () => this.touchDir = -1); lz.on('pointerup', () => { if (this.touchDir === -1) this.touchDir = 0; });
-        lz.on('pointerout', () => { if (this.touchDir === -1) this.touchDir = 0; });
+        const lz = this.add.rectangle(100, 620, 150, 80, 0x00ddff, 0.08).setScrollFactor(0).setDepth(50).setInteractive();
+        lz.on('pointerdown', () => this.touchDir = -1); lz.on('pointerup', () => this.touchDir = 0);
         // Right zone
-        const rz = this.add.rectangle(360, 980, 200, 100, 0x00ddff, 0.08).setScrollFactor(0).setDepth(50).setInteractive();
-        this.add.text(360, 980, '▶', { fontSize: '34px', color: '#00ddff' }).setOrigin(0.5).setScrollFactor(0).setDepth(51).setAlpha(0.5);
-        rz.on('pointerdown', () => this.touchDir = 1); rz.on('pointerup', () => { if (this.touchDir === 1) this.touchDir = 0; });
-        rz.on('pointerout', () => { if (this.touchDir === 1) this.touchDir = 0; });
-        // Shoot zone (Gun Boot)
-        const az = this.add.rectangle(600, 980, 200, 100, 0xffaa00, 0.12).setScrollFactor(0).setDepth(50).setInteractive();
-        this.add.text(600, 980, '💥', { fontSize: '34px' }).setOrigin(0.5).setScrollFactor(0).setDepth(51).setAlpha(0.7);
+        const rz = this.add.rectangle(250, 620, 150, 80, 0x00ddff, 0.08).setScrollFactor(0).setDepth(50).setInteractive();
+        rz.on('pointerdown', () => this.touchDir = 1); rz.on('pointerup', () => this.touchDir = 0);
+        // Shoot zone
+        const az = this.add.rectangle(200, 400, 400, 800, 0x0, 0).setScrollFactor(0).setDepth(10).setInteractive();
         az.on('pointerdown', () => this.touchAtk = true); az.on('pointerup', () => this.touchAtk = false);
     }
 
     createUI() {
-        this.uiContainer = this.add.container(0, 0).setScrollFactor(0).setDepth(200);
-        // Top HUD Shadow
-        this.uiContainer.add(this.add.rectangle(240, 40, 480, 80, 0x000000, 0.6));
+        this.uiContainer = this.add.container(0, 0).setDepth(200);
+        // Strict Margin: 20px from top and sides (400 - 40 = 360 wide)
+        this.uiContainer.add(this.add.rectangle(200, 35, 360, 50, 0x000000, 0.7).setStrokeStyle(1, 0x00ddff, 0.3));
 
-        // LARGE Score and Combo
-        this.scoreLabel = this.add.text(240, 30, 'SCORE: 0', { fontSize: '28px', fontFamily: 'Orbitron', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
-        this.hpLabel = this.add.text(20, 15, 'HP', { fontSize: '18px', fontFamily: 'Orbitron', color: '#ff3366', fontStyle: 'bold' });
-        this.hpBarBgUI = this.add.rectangle(60, 25, 120, 14, 0x330011).setOrigin(0, 0.5);
-        this.hpBarFillUI = this.add.rectangle(60, 25, 120, 14, 0xff3366).setOrigin(0, 0.5);
+        this.scoreLabel = this.add.text(200, 35, '0', { fontSize: '24px', fontFamily: 'Orbitron', color: '#ffffff' }).setOrigin(0.5);
+        this.hpLabel = this.add.text(35, 25, 'HP', { fontSize: '14px', fontFamily: 'Orbitron', color: '#ff3366' });
+        this.hpBarBgUI = this.add.rectangle(65, 35, 100, 10, 0x330011).setOrigin(0, 0.5);
+        this.hpBarFillUI = this.add.rectangle(65, 35, 100, 10, 0xff3366).setOrigin(0, 0.5);
 
-        this.comboLabel = this.add.text(460, 30, '', { fontSize: '32px', fontFamily: 'Orbitron', color: '#ffdd00', fontStyle: '900' }).setOrigin(1, 0.5);
-
+        this.comboLabel = this.add.text(365, 35, '', { fontSize: '20px', fontFamily: 'Orbitron', color: '#ffcc00' }).setOrigin(1, 0.5);
         this.uiContainer.add([this.scoreLabel, this.hpLabel, this.hpBarBgUI, this.hpBarFillUI, this.comboLabel]);
 
         // Floating HUD for player (retained but simplified)
@@ -535,6 +487,22 @@ class GameScene extends Phaser.Scene {
     update(time, delta) {
         if (this.goalReached || !this.player.active) return;
         const dt = delta / 1000;
+
+        // 1. Safe Start Logic
+        if (this.safeStartTimer > 0) {
+            this.safeStartTimer -= dt;
+            if (this.safeStartTimer <= 0) this.spawnEnemies();
+            return;
+        }
+
+        // 2. Offscreen Performance Cleanup
+        this.enemyGroup.children.each(e => {
+            if (e.active && e.y < this.cameras.main.scrollY - 100) e.destroy();
+        });
+        this.bullets.children.each(b => {
+            if (b.active && (b.y > this.cameras.main.scrollY + 1000 || b.y < this.cameras.main.scrollY - 200)) b.destroy();
+        });
+
         this.stageTime += dt;
         this.dynamicAccel = Math.min(this.stageTime * 0.45, 25);
         const currentScrollSpeed = this.baseScrollSpeed + this.dynamicAccel;
@@ -545,7 +513,7 @@ class GameScene extends Phaser.Scene {
         // Enhanced death check for high recoil
         if (this.player.y < this.cameras.main.scrollY) {
             this.offScreenTimer += dt;
-            if (this.offScreenTimer > 2.5) { this.playerDeath(); return; } // Give 2.5 seconds buffer
+            if (this.offScreenTimer > 3.0) { this.playerDeath(); return; } // Shortened buffer
         } else {
             this.offScreenTimer = 0;
         }
@@ -683,17 +651,13 @@ class GameScene extends Phaser.Scene {
 
     updateEnemyWarnings() {
         this.warnings.clear(true, true);
-        const camBottom = this.cameras.main.scrollY + 800;
-        let count = 0;
+        const camBottom = this.cameras.main.scrollY + 700;
+        let c = 0;
         this.enemyGroup.children.each(e => {
-            if (count >= 3) return; // Limit to 3 warnings
+            if (c >= 3) return;
             if (e.active && e.y > camBottom && e.y < camBottom + 600) {
-                const warn = this.add.image(e.x, 760, 'warning').setScrollFactor(0).setDepth(250).setTint(0xff3333);
-                const dist = e.y - camBottom;
-                const alpha = Phaser.Math.Clamp(1 - (dist / 600), 0.2, 1);
-                warn.setAlpha(alpha);
-                if (dist < 200) warn.setScale(1.2 + Math.sin(this.time.now * 0.02) * 0.2);
-                count++;
+                this.add.image(e.x, 670, 'warning').setScrollFactor(0).setDepth(200).setTint(0xff3333).setScale(0.8);
+                c++;
             }
         });
     }
@@ -726,52 +690,29 @@ class GameScene extends Phaser.Scene {
     shootGunBoot() {
         if (this.ammo <= 0) return;
         this.ammo--;
-        this.shootCooldown = 0.25;
-        const atk = GameState.getAtk();
-        const hits = GameState.hasEffect('doubleHit') ? 2 : 1;
-        for (let h = 0; h < hits; h++) {
-            const offsetX = hits > 1 ? (h === 0 ? -12 : 12) : 0;
-            const b = this.bullets.create(this.player.x + offsetX, this.player.y + 40, 'bullet');
-            b.setVelocityY(600);
-            b.body.setGravityY(-600);
-            b.damage = atk;
-            b.setDepth(5);
-            b.body.setSize(24, 24); // Optimized size
-        }
-        // Moderate Recoil
-        const recoilForce = -350 - (GameState.hasEffect('antiGravity') ? 60 : 0);
-        this.player.setVelocityY(recoilForce);
-        // Massive Muzzle flash
-        const flash = this.add.image(this.player.x, this.player.y + 45, 'muzzle_flash').setScale(1.5).setAlpha(0.9).setDepth(15);
-        this.tweens.add({ targets: flash, scale: 2.2, alpha: 0, duration: 150, onComplete: () => flash.destroy() });
-        // Shell casing ejection (Larger)
+        this.shootCooldown = 0.35;
+        const b = this.bullets.create(this.player.x, this.player.y + 20, 'bullet');
+        b.setVelocityY(600).setAlpha(0.6).setDepth(4); // Under player
+        b.body.setGravityY(-600);
+        b.body.setSize(20, 20);
+        this.player.body.velocity.y = -350; // Moderate recoil
+
+        // Visual effects
+        const flash = this.add.image(this.player.x, this.player.y + 35, 'muzzle_flash').setScale(1.2).setAlpha(0.8).setDepth(5);
+        this.tweens.add({ targets: flash, scale: 1.6, alpha: 0, duration: 150, onComplete: () => flash.destroy() });
+
         const shellDir = this.player.facingRight ? 1 : -1;
-        for (let i = 0; i < 2; i++) {
-            const shell = this.add.image(this.player.x + shellDir * 15, this.player.y + 30, 'shell').setDepth(8).setScale(1.5);
-            this.tweens.add({
-                targets: shell,
-                x: shell.x + shellDir * Phaser.Math.Between(20, 60),
-                y: shell.y + Phaser.Math.Between(-40, -10),
-                angle: Phaser.Math.Between(90, 720),
-                alpha: 0, duration: 600,
-                onComplete: () => shell.destroy()
-            });
-        }
-        // Fire sparks
-        for (let i = 0; i < 6; i++) {
-            const sp = this.add.image(this.player.x + Phaser.Math.Between(-12, 12), this.player.y + 40, 'spark').setDepth(15).setScale(1.5);
-            this.tweens.add({
-                targets: sp,
-                x: sp.x + Phaser.Math.Between(-30, 30),
-                y: sp.y + Phaser.Math.Between(20, 60),
-                alpha: 0, scale: 0, duration: Phaser.Math.Between(200, 400),
-                onComplete: () => sp.destroy()
-            });
-        }
-        // Speed lines on recoil
-        this.spawnSpeedLines(500);
-        // Screen shake
-        this.cameras.main.shake(70, 0.007);
+        const shell = this.add.image(this.player.x + shellDir * 10, this.player.y + 20, 'shell').setDepth(3);
+        this.tweens.add({
+            targets: shell,
+            x: shell.x + shellDir * 40,
+            y: shell.y - 20,
+            angle: 360,
+            alpha: 0, duration: 500,
+            onComplete: () => shell.destroy()
+        });
+
+        this.cameras.main.shake(50, 0.005);
     }
 
     spawnSpeedLines(speed) {
@@ -1117,9 +1058,9 @@ class CollectionScene extends Phaser.Scene {
 // --- Phaser Config ---
 const config = {
     type: Phaser.AUTO,
-    width: 480, height: 800, // Fixed aspect ratio
+    width: 400, height: 700,
     parent: 'game-container',
-    backgroundColor: '#050510',
+    backgroundColor: '#000000',
     physics: {
         default: 'arcade',
         arcade: { gravity: { y: 600 }, debug: false }
@@ -1127,8 +1068,7 @@ const config = {
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 480,
-        height: 800
+        width: 400, height: 700
     },
     scene: [BootScene, MenuScene, GameScene, ItemSelectScene, GameOverScene]
 };
