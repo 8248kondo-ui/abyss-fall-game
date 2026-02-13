@@ -311,7 +311,9 @@ class GameScene extends Phaser.Scene {
         this.offScreenTimer = 0;
 
         // Setup UI Camera
-        this.uiCamera = this.cameras.add(0, 0, 480, 800).setScroll(0, 0).setZoom(1).setDepth(100);
+        this.uiCamera = this.cameras.add(0, 0, 480, 800);
+        this.uiCamera.setScroll(0, 0);
+        this.uiCamera.setZoom(1);
         this.cameras.main.ignore([/* List of HUD items if needed, but easier to use camera.ignore on main */]);
 
         // Controls
