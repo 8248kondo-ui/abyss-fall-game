@@ -1,6 +1,5 @@
-// =============================================
-// ABYSS FALL - メインゲームロジック
-// =============================================
+// --- 定数定義 ---
+const DIFFICULTY_LEVELS = ['C', 'B', 'A', 'S'];
 
 // --- ゲーム状態管理 ---
 const GameState = {
@@ -307,6 +306,9 @@ class GameScene extends Phaser.Scene {
         this.dynamicAccel = 0;
         this.stageTime = 0;
         this.combo = 0;
+        this.interceptorTimer = 0;
+        this.interceptorInterval = Math.max(1.5, 4 - GameState.getDifficulty() * 0.5);
+        this.goalReached = false;
         // Controls
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
