@@ -154,10 +154,10 @@ class BootScene extends Phaser.Scene {
         g.lineStyle(4, 0xff0000); g.strokeCircle(20, 20, 18);
         g.fillStyle(0xff0000); g.fillRect(18, 8, 4, 15); g.fillCircle(20, 28, 3);
         g.generateTexture('warning', 40, 40); g.clear();
-        // Bullet (Giant: 1:1 with player width)
-        g.fillStyle(0xffff00); g.fillCircle(24, 24, 24);
-        g.fillStyle(0xffaa00); g.fillCircle(24, 24, 12);
-        g.generateTexture('bullet', 48, 48); g.clear();
+        // Bullet (Optimized: 0.5x of player width)
+        g.fillStyle(0xffff00); g.fillCircle(12, 12, 12);
+        g.fillStyle(0xffaa00); g.fillCircle(12, 12, 6);
+        g.generateTexture('bullet', 24, 24); g.clear();
         // Shell casing
         g.fillStyle(0xddaa44); g.fillRect(0, 0, 4, 8);
         g.fillStyle(0xbb8833); g.fillRect(0, 0, 4, 2);
@@ -187,9 +187,9 @@ class BootScene extends Phaser.Scene {
         g.fillStyle(0xffffff); g.fillCircle(4, 4, 4);
         g.generateTexture('particle', 8, 8); g.clear();
         // BG tile
-        g.fillStyle(0x0a0a14); g.fillRect(0, 0, 720, 80);
-        g.lineStyle(1, 0x151525); g.strokeRect(0, 0, 720, 80);
-        g.generateTexture('bg_tile', 720, 80); g.clear();
+        g.fillStyle(0x0a0a14); g.fillRect(0, 0, 480, 80);
+        g.lineStyle(1, 0x151525); g.strokeRect(0, 0, 480, 80);
+        g.generateTexture('bg_tile', 480, 80); g.clear();
         g.destroy();
         this.scene.start('Menu');
     }
@@ -200,28 +200,27 @@ class MenuScene extends Phaser.Scene {
     constructor() { super('Menu'); }
     create() {
         this.cameras.main.setBackgroundColor('#050510');
-        const cx = 360, cy = 640; // Center for 1280 height
+        const cx = 240, cy = 400; // Center for 800 height
         // Title
-        this.add.text(cx, 220, 'ABYSS FALL', {
-            fontSize: '80px', fontFamily: 'Orbitron, sans-serif',
+        this.add.text(cx, 120, 'ABYSS FALL', {
+            fontSize: '56px', fontFamily: 'Orbitron, sans-serif',
             color: '#00ddff', fontStyle: 'bold'
         }).setOrigin(0.5).setShadow(0, 0, '#00ddff', 20);
 
-        this.add.text(cx, 300, '垂直落下型ローグライク・究極進化', {
-            fontSize: '20px', fontFamily: 'sans-serif', color: '#6688aa'
+        this.add.text(cx, 180, '垂直落下型ローグライク・究極進化', {
+            fontSize: '16px', fontFamily: 'sans-serif', color: '#6688aa'
         }).setOrigin(0.5);
 
-        // Buttons (Adjusted for 1280h)
-        this.createBtn(cx, 550, 'NORMAL モード', '#00cc88', () => { GameState.mode = 'NORMAL'; GameState.reset(true); this.scene.start('Game'); });
-        this.add.text(cx, 600, '死亡時：アイテム消失、レベル維持', { fontSize: '15px', color: '#558866' }).setOrigin(0.5);
+        // Buttons (Adjusted for 800h)
+        this.createBtn(cx, 350, 'NORMAL モード', '#00cc88', () => { GameState.mode = 'NORMAL'; GameState.reset(true); this.scene.start('Game'); });
+        this.add.text(cx, 390, '死亡時：アイテム消失、レベル維持', { fontSize: '13px', color: '#558866' }).setOrigin(0.5);
 
-        this.createBtn(cx, 700, 'HARD モード', '#ff4466', () => { GameState.mode = 'HARD'; GameState.reset(true); this.scene.start('Game'); });
-        this.add.text(cx, 750, '死亡時：全てリセット', { fontSize: '15px', color: '#885566' }).setOrigin(0.5);
+        this.createBtn(cx, 480, 'HARD モード', '#ff4466', () => { GameState.mode = 'HARD'; GameState.reset(true); this.scene.start('Game'); });
+        this.add.text(cx, 520, '死亡時：全てリセット', { fontSize: '13px', color: '#885566' }).setOrigin(0.5);
 
         // Info
-        this.add.text(cx, 1000, '操作: ← → 移動 / SPACE ガンブーツ発射', { fontSize: '18px', color: '#445566' }).setOrigin(0.5);
-        this.add.text(cx, 1040, '巨大な弾の反動で空を飛べ！', { fontSize: '18px', color: '#00ddff', fontStyle: 'bold' }).setOrigin(0.5);
-        this.add.text(cx, 1150, `最高レベル記録: Lv.${GameState.level}`, { fontSize: '18px', color: '#445566' }).setOrigin(0.5);
+        this.add.text(cx, 680, '操作: ← → 移動 / SPACE 射撃', { fontSize: '14px', color: '#445566' }).setOrigin(0.5);
+        this.add.text(cx, 710, `最高レベル記録: Lv.${GameState.level}`, { fontSize: '14px', color: '#445566' }).setOrigin(0.5);
     }
     createBtn(x, y, text, color, cb) {
         const bg = this.add.rectangle(x, y, 340, 56, Phaser.Display.Color.HexStringToColor(color).color, 0.15)
@@ -238,12 +237,12 @@ class GameScene extends Phaser.Scene {
     constructor() { super('Game'); }
     create() {
         this.stageHeight = 4500 + GameState.currentStage * 500;
-        this.physics.world.setBounds(0, 0, 720, this.stageHeight);
-        this.cameras.main.setBounds(0, 0, 720, this.stageHeight);
+        this.physics.world.setBounds(0, 0, 480, this.stageHeight);
+        this.cameras.main.setBounds(0, 0, 480, this.stageHeight);
         this.cameras.main.setBackgroundColor('#0a0a14');
         // BG
         for (let y = 0; y < this.stageHeight; y += 80) {
-            this.add.image(360, y + 40, 'bg_tile').setAlpha(0.5);
+            this.add.image(240, y + 40, 'bg_tile').setAlpha(0.5);
             if (Math.random() < 0.15) {
                 this.add.circle(Phaser.Math.Between(20, 700), y + Phaser.Math.Between(0, 80),
                     Phaser.Math.Between(1, 3), 0x00ddff, 0.15);
@@ -258,9 +257,9 @@ class GameScene extends Phaser.Scene {
         this.spikeGroup = this.physics.add.staticGroup();
         this.generatePlatforms();
         // Goal
-        this.goal = this.physics.add.staticImage(360, this.stageHeight - 100, 'goal').setScale(8, 2.5).refreshBody();
-        this.goal.body.setSize(720, 100).setOffset(-270, -35); // Adjust offset for wider body
-        this.add.text(360, this.stageHeight - 155, '⬇ FINAL DEPTH ⬇', { fontSize: '32px', color: '#ffdd00', fontStyle: 'bold' }).setOrigin(0.5);
+        this.goal = this.physics.add.staticImage(240, this.stageHeight - 100, 'goal').setScale(5, 2.5).refreshBody();
+        this.goal.body.setSize(480, 100).setOffset(-215, -35);
+        this.add.text(240, this.stageHeight - 155, '⬇ FINAL DEPTH ⬇', { fontSize: '24px', color: '#ffdd00', fontStyle: 'bold' }).setOrigin(0.5);
         // Enemies
         this.enemyGroup = this.physics.add.group();
         this.spawnEnemies();
@@ -269,7 +268,7 @@ class GameScene extends Phaser.Scene {
         // Bullets
         this.bullets = this.physics.add.group();
         // Player
-        this.player = this.physics.add.sprite(360, 300, 'player');
+        this.player = this.physics.add.sprite(240, 200, 'player');
         this.player.setCollideWorldBounds(true);
         this.player.body.setGravityY(450 * GameState.getFallMod()); // 1.5x gravity
         this.player.setDepth(10);
@@ -288,8 +287,8 @@ class GameScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.xpOrbs, this.collectXP, null, this);
         this.physics.add.overlap(this.bullets, this.enemyGroup, this.onBulletHitEnemy, null, this);
         // Camera
-        this.cameras.main.startFollow(this.player, false, 0.1, 0.3, 0, -320);
-        this.cameras.main.setZoom(0.85);
+        this.cameras.main.startFollow(this.player, false, 0.1, 0.3, 0, -200);
+        this.cameras.main.setZoom(1.0); // Reset zoom for clarity at 480x800
         this.autoScrollY = 0;
         this.baseScrollSpeed = 22 + GameState.getDifficulty() * 12 + GameState.currentStage * 3;
         this.dynamicAccel = 0;
@@ -298,10 +297,10 @@ class GameScene extends Phaser.Scene {
         this.interceptorTimer = 0;
         this.interceptorInterval = Math.max(1.5, 4 - GameState.getDifficulty() * 0.5);
         this.goalReached = false;
-        this.offScreenTimer = 0; // Buffer for being off-screen top
+        this.offScreenTimer = 0;
 
         // Setup UI Camera
-        this.uiCamera = this.cameras.add(0, 0, 720, 1280).setScroll(0, 0).setZoom(1);
+        this.uiCamera = this.cameras.add(0, 0, 480, 800).setScroll(0, 0).setZoom(1).setDepth(100);
         this.cameras.main.ignore([/* List of HUD items if needed, but easier to use camera.ignore on main */]);
 
         // Controls
@@ -316,9 +315,9 @@ class GameScene extends Phaser.Scene {
         this.createUI();
 
         // Final depth text
-        const diff = GameState.getDifficultyLabel();
-        const stTxt = this.add.text(360, 640, `Stage ${GameState.currentStage}\n${diff}`, {
-            fontSize: '56px', fontFamily: 'Orbitron, sans-serif', color: '#00ddff', align: 'center', fontStyle: 'bold'
+        const diffLabel = GameState.getDifficultyLabel();
+        const stTxt = this.add.text(240, 350, `Stage ${GameState.currentStage}\n${diffLabel}`, {
+            fontSize: '42px', fontFamily: 'Orbitron, sans-serif', color: '#00ddff', align: 'center', fontStyle: 'bold'
         }).setOrigin(0.5).setScrollFactor(0).setDepth(100);
         this.tweens.add({ targets: stTxt, alpha: 0, y: 580, duration: 2000, delay: 1000, onComplete: () => stTxt.destroy() });
 
@@ -334,7 +333,7 @@ class GameScene extends Phaser.Scene {
         this.addPlatform(360, 140, 3);
         let y = 140 + spacing;
         while (y < this.stageHeight - 250) {
-            const x = Phaser.Math.Between(80, 640);
+            const x = Phaser.Math.Between(60, 420);
             const spikeChance = 0.18 + GameState.getDifficulty() * 0.06;
             if (Math.random() < spikeChance) {
                 this.addSpike(x, y, Phaser.Math.Between(1, 2));
@@ -342,7 +341,7 @@ class GameScene extends Phaser.Scene {
                 this.addPlatform(x, y, Phaser.Math.Between(1, 3));
             }
             if (Math.random() < 0.25) {
-                const x2 = Phaser.Math.Between(80, 640);
+                const x2 = Phaser.Math.Between(60, 420);
                 this.addPlatform(x2, y + Phaser.Math.Between(-20, 20), Phaser.Math.Between(1, 2));
             }
             y += Phaser.Math.Between(Math.floor(spacing * 0.8), Math.floor(spacing * 1.4));
@@ -367,10 +366,10 @@ class GameScene extends Phaser.Scene {
         const baseRate = 0.6 + diff * 0.15; // Triple density approx
 
         this.platforms.children.iterate(p => {
-            if (p.y < 200 || p.y > this.stageHeight - 200) return;
+            if (p.y < 800 || p.y > this.stageHeight - 200) return; // 800px Safe Zone
 
-            // Pattern 1: Basic probability
-            if (Math.random() < baseRate) {
+            // Pattern 1: Basic probability (Reduced Density)
+            if (Math.random() < baseRate * 0.5) {
                 this.createEnemy(p.x, p.y - 32, Math.random() < 0.4, 'patrol', p);
             }
 
@@ -384,10 +383,10 @@ class GameScene extends Phaser.Scene {
             }
         });
 
-        // Massive Hunters
-        const hunterCount = Math.floor(5 + diff * 3);
+        // Hunters (Reduced count)
+        const hunterCount = Math.floor(2 + diff * 2);
         for (let i = 0; i < hunterCount; i++) {
-            this.createEnemy(Phaser.Math.Between(60, 660), Phaser.Math.Between(500, this.stageHeight - 400), true, 'hunter', null);
+            this.createEnemy(Phaser.Math.Between(60, 420), Phaser.Math.Between(800, this.stageHeight - 400), true, 'hunter', null);
         }
     }
 
@@ -438,19 +437,19 @@ class GameScene extends Phaser.Scene {
         if (camBottom > this.stageHeight - 100) return;
 
         const pattern = Math.random();
-        if (pattern < 0.6) {
+        if (pattern < 0.7) {
             // Single spawn
-            this.createEnemy(Phaser.Math.Between(60, 660), camBottom, Math.random() < 0.4, 'interceptor', null);
-        } else if (pattern < 0.85) {
+            this.createEnemy(Phaser.Math.Between(60, 420), camBottom, Math.random() < 0.4, 'interceptor', null);
+        } else if (pattern < 0.9) {
             // V-Formation
-            const centerX = Phaser.Math.Between(150, 570);
+            const centerX = Phaser.Math.Between(100, 380);
             this.createEnemy(centerX, camBottom, true, 'interceptor', null);
-            this.createEnemy(centerX - 60, camBottom + 50, false, 'interceptor', null);
-            this.createEnemy(centerX + 60, camBottom + 50, false, 'interceptor', null);
+            this.createEnemy(centerX - 40, camBottom + 40, false, 'interceptor', null);
+            this.createEnemy(centerX + 40, camBottom + 40, false, 'interceptor', null);
         } else {
-            // Horizontal Wall
-            for (let i = 0; i < 4; i++) {
-                this.createEnemy(120 + i * 160, camBottom, i % 2 === 0, 'interceptor', null);
+            // Horizontal Wall (Reduced width)
+            for (let i = 0; i < 3; i++) {
+                this.createEnemy(80 + i * 160, camBottom, i % 2 === 0, 'interceptor', null);
             }
         }
     }
@@ -473,17 +472,17 @@ class GameScene extends Phaser.Scene {
     }
 
     createUI() {
-        this.uiContainer = this.add.container(0, 0).setScrollFactor(0).setDepth(100);
+        this.uiContainer = this.add.container(0, 0).setScrollFactor(0).setDepth(200);
         // Top HUD Shadow
-        this.uiContainer.add(this.add.rectangle(360, 50, 720, 100, 0x000000, 0.5));
+        this.uiContainer.add(this.add.rectangle(240, 40, 480, 80, 0x000000, 0.6));
 
         // LARGE Score and Combo
-        this.scoreLabel = this.add.text(360, 45, 'SCORE: 0', { fontSize: '36px', fontFamily: 'Orbitron', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5).setScrollFactor(0);
-        this.hpLabel = this.add.text(20, 15, 'HP', { fontSize: '24px', fontFamily: 'Orbitron', color: '#ff3366', fontStyle: 'bold' }).setScrollFactor(0);
-        this.hpBarBgUI = this.add.rectangle(65, 30, 200, 20, 0x330011).setOrigin(0, 0.5).setScrollFactor(0);
-        this.hpBarFillUI = this.add.rectangle(65, 30, 200, 20, 0xff3366).setOrigin(0, 0.5).setScrollFactor(0);
+        this.scoreLabel = this.add.text(240, 30, 'SCORE: 0', { fontSize: '28px', fontFamily: 'Orbitron', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
+        this.hpLabel = this.add.text(20, 15, 'HP', { fontSize: '18px', fontFamily: 'Orbitron', color: '#ff3366', fontStyle: 'bold' });
+        this.hpBarBgUI = this.add.rectangle(60, 25, 120, 14, 0x330011).setOrigin(0, 0.5);
+        this.hpBarFillUI = this.add.rectangle(60, 25, 120, 14, 0xff3366).setOrigin(0, 0.5);
 
-        this.comboLabel = this.add.text(700, 45, '', { fontSize: '40px', fontFamily: 'Orbitron', color: '#ffdd00', fontStyle: '900' }).setOrigin(1, 0.5).setScrollFactor(0);
+        this.comboLabel = this.add.text(460, 30, '', { fontSize: '32px', fontFamily: 'Orbitron', color: '#ffdd00', fontStyle: '900' }).setOrigin(1, 0.5);
 
         this.uiContainer.add([this.scoreLabel, this.hpLabel, this.hpBarBgUI, this.hpBarFillUI, this.comboLabel]);
 
@@ -505,8 +504,8 @@ class GameScene extends Phaser.Scene {
         }
 
         const hpRate = GameState.hp / GameState.maxHp;
-        this.hpBarFillUI.width = 200 * hpRate;
-        this.hpBarFillUI.setFillStyle(hpRate > 0.5 ? 0x00ff66 : hpRate > 0.25 ? 0xffaa00 : 0xff3333);
+        this.hpBarFillUI.width = 120 * hpRate;
+        this.hpBarFillUI.setFillStyle(hpRate > 0.4 ? 0xff3366 : hpRate > 0.2 ? 0xffaa00 : 0xff0000);
 
         this.floatLevel.setText(`Lv.${GameState.level}`);
 
@@ -671,14 +670,17 @@ class GameScene extends Phaser.Scene {
 
     updateEnemyWarnings() {
         this.warnings.clear(true, true);
-        const camBottom = this.cameras.main.scrollY + 1080;
+        const camBottom = this.cameras.main.scrollY + 800;
+        let count = 0;
         this.enemyGroup.children.each(e => {
-            if (e.active && e.y > camBottom && e.y < camBottom + 800) {
-                const warn = this.add.image(e.x, 1040, 'warning').setScrollFactor(0).setDepth(90).setTint(0xff3333);
+            if (count >= 3) return; // Limit to 3 warnings
+            if (e.active && e.y > camBottom && e.y < camBottom + 600) {
+                const warn = this.add.image(e.x, 760, 'warning').setScrollFactor(0).setDepth(250).setTint(0xff3333);
                 const dist = e.y - camBottom;
-                const alpha = Phaser.Math.Clamp(1 - (dist / 800), 0.2, 1);
+                const alpha = Phaser.Math.Clamp(1 - (dist / 600), 0.2, 1);
                 warn.setAlpha(alpha);
-                if (dist < 300) warn.setScale(1.2 + Math.sin(this.time.now * 0.02) * 0.2);
+                if (dist < 200) warn.setScale(1.2 + Math.sin(this.time.now * 0.02) * 0.2);
+                count++;
             }
         });
     }
@@ -711,7 +713,7 @@ class GameScene extends Phaser.Scene {
     shootGunBoot() {
         if (this.ammo <= 0) return;
         this.ammo--;
-        this.shootCooldown = 0.12; // Slightly faster fire rate
+        this.shootCooldown = 0.25;
         const atk = GameState.getAtk();
         const hits = GameState.hasEffect('doubleHit') ? 2 : 1;
         for (let h = 0; h < hits; h++) {
@@ -721,12 +723,11 @@ class GameScene extends Phaser.Scene {
             b.body.setGravityY(-600);
             b.damage = atk;
             b.setDepth(5);
-            // Giant hitboxes for giant bullets
-            b.body.setSize(48, 48);
+            b.body.setSize(24, 24); // Optimized size
         }
-        // Recoil (Slightly stronger for the massive bullets)
-        const recoilForce = -220 - (GameState.hasEffect('antiGravity') ? 60 : 0);
-        this.player.setVelocityY(Math.min(this.player.body.velocity.y + recoilForce, recoilForce));
+        // Moderate Recoil
+        const recoilForce = -350 - (GameState.hasEffect('antiGravity') ? 60 : 0);
+        this.player.setVelocityY(recoilForce);
         // Massive Muzzle flash
         const flash = this.add.image(this.player.x, this.player.y + 45, 'muzzle_flash').setScale(1.5).setAlpha(0.9).setDepth(15);
         this.tweens.add({ targets: flash, scale: 2.2, alpha: 0, duration: 150, onComplete: () => flash.destroy() });
@@ -1103,7 +1104,7 @@ class CollectionScene extends Phaser.Scene {
 // --- Phaser Config ---
 const config = {
     type: Phaser.AUTO,
-    width: 720, height: 1280, // Slightly taller for mobile
+    width: 480, height: 800, // Fixed aspect ratio
     parent: 'game-container',
     backgroundColor: '#050510',
     physics: {
@@ -1113,8 +1114,8 @@ const config = {
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: 720,
-        height: 1280
+        width: 480,
+        height: 800
     },
     scene: [BootScene, MenuScene, GameScene, ItemSelectScene, GameOverScene]
 };
