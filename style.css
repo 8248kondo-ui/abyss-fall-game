@@ -47,6 +47,7 @@ body {
 #game-container {
     position: relative;
     z-index: 1;
+    margin: auto;
     border: 1px solid rgba(0, 221, 255, 0.2);
     border-radius: 4px;
     box-shadow:
