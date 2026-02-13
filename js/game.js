@@ -199,37 +199,29 @@ class BootScene extends Phaser.Scene {
 class MenuScene extends Phaser.Scene {
     constructor() { super('Menu'); }
     create() {
-        this.cameras.main.setBackgroundColor('#0a0a14');
-        const cx = 360, cy = 540;
+        this.cameras.main.setBackgroundColor('#050510');
+        const cx = 360, cy = 640; // Center for 1280 height
         // Title
-        this.add.text(cx, 150, 'ABYSS FALL', {
-            fontSize: '64px', fontFamily: 'Orbitron, sans-serif',
+        this.add.text(cx, 220, 'ABYSS FALL', {
+            fontSize: '80px', fontFamily: 'Orbitron, sans-serif',
             color: '#00ddff', fontStyle: 'bold'
-        }).setOrigin(0.5).setShadow(0, 0, '#00ddff', 16);
-        this.add.text(cx, 220, '垂直落下型ローグライク・アクション', {
-            fontSize: '16px', fontFamily: 'sans-serif', color: '#6688aa'
+        }).setOrigin(0.5).setShadow(0, 0, '#00ddff', 20);
+
+        this.add.text(cx, 300, '垂直落下型ローグライク・究極進化', {
+            fontSize: '20px', fontFamily: 'sans-serif', color: '#6688aa'
         }).setOrigin(0.5);
-        // Floating particles
-        for (let i = 0; i < 40; i++) {
-            const p = this.add.circle(
-                Phaser.Math.Between(0, 720), Phaser.Math.Between(0, 1080),
-                Phaser.Math.Between(1, 4), 0x00ddff, 0.3
-            );
-            this.tweens.add({
-                targets: p, y: p.y - 120, alpha: 0, duration: Phaser.Math.Between(2000, 5000),
-                repeat: -1, yoyo: true
-            });
-        }
-        // Buttons
-        this.createBtn(cx, 420, 'NORMAL モード', '#00cc88', () => { GameState.mode = 'NORMAL'; GameState.reset(true); this.scene.start('Game'); });
-        this.add.text(cx, 465, '死亡時：アイテム消失、レベル維持', { fontSize: '13px', color: '#558866' }).setOrigin(0.5);
-        this.createBtn(cx, 540, 'HARD モード', '#ff4466', () => { GameState.mode = 'HARD'; GameState.reset(true); this.scene.start('Game'); });
-        this.add.text(cx, 585, '死亡時：全てリセット', { fontSize: '13px', color: '#885566' }).setOrigin(0.5);
-        this.createBtn(cx, 700, '📖 図鑑 (準備中)', '#8866ff', () => { /* this.scene.start('Collection'); */ });
+
+        // Buttons (Adjusted for 1280h)
+        this.createBtn(cx, 550, 'NORMAL モード', '#00cc88', () => { GameState.mode = 'NORMAL'; GameState.reset(true); this.scene.start('Game'); });
+        this.add.text(cx, 600, '死亡時：アイテム消失、レベル維持', { fontSize: '15px', color: '#558866' }).setOrigin(0.5);
+
+        this.createBtn(cx, 700, 'HARD モード', '#ff4466', () => { GameState.mode = 'HARD'; GameState.reset(true); this.scene.start('Game'); });
+        this.add.text(cx, 750, '死亡時：全てリセット', { fontSize: '15px', color: '#885566' }).setOrigin(0.5);
+
         // Info
-        this.add.text(cx, 880, '操作: ← → 移動 / SPACE ガンブーツ発射', { fontSize: '14px', color: '#445566' }).setOrigin(0.5);
-        this.add.text(cx, 910, '白い敵は踏んで倒せる / 赤い敵は弾で倒す', { fontSize: '13px', color: '#445566' }).setOrigin(0.5);
-        this.add.text(cx, 950, `最高レベル記録: Lv.${GameState.level}`, { fontSize: '14px', color: '#445566' }).setOrigin(0.5);
+        this.add.text(cx, 1000, '操作: ← → 移動 / SPACE ガンブーツ発射', { fontSize: '18px', color: '#445566' }).setOrigin(0.5);
+        this.add.text(cx, 1040, '巨大な弾の反動で空を飛べ！', { fontSize: '18px', color: '#00ddff', fontStyle: 'bold' }).setOrigin(0.5);
+        this.add.text(cx, 1150, `最高レベル記録: Lv.${GameState.level}`, { fontSize: '18px', color: '#445566' }).setOrigin(0.5);
     }
     createBtn(x, y, text, color, cb) {
         const bg = this.add.rectangle(x, y, 340, 56, Phaser.Display.Color.HexStringToColor(color).color, 0.15)
@@ -295,9 +287,9 @@ class GameScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.goal, this.onGoal, null, this);
         this.physics.add.overlap(this.player, this.xpOrbs, this.collectXP, null, this);
         this.physics.add.overlap(this.bullets, this.enemyGroup, this.onBulletHitEnemy, null, this);
-        // Camera (Optimized Zoom for High Density)
+        // Camera
         this.cameras.main.startFollow(this.player, false, 0.1, 0.3, 0, -320);
-        this.cameras.main.setZoom(0.85); // Zoom out slightly to see more of the chaos below
+        this.cameras.main.setZoom(0.85);
         this.autoScrollY = 0;
         this.baseScrollSpeed = 22 + GameState.getDifficulty() * 12 + GameState.currentStage * 3;
         this.dynamicAccel = 0;
@@ -306,39 +298,34 @@ class GameScene extends Phaser.Scene {
         this.interceptorTimer = 0;
         this.interceptorInterval = Math.max(1.5, 4 - GameState.getDifficulty() * 0.5);
         this.goalReached = false;
+        this.offScreenTimer = 0; // Buffer for being off-screen top
+
+        // Setup UI Camera
+        this.uiCamera = this.cameras.add(0, 0, 720, 1280).setScroll(0, 0).setZoom(1);
+        this.cameras.main.ignore([/* List of HUD items if needed, but easier to use camera.ignore on main */]);
+
         // Controls
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-        this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        // Hybrid Controls
-        this.touchDir = 0;
-        this.touchAtk = false;
-        this.swipeStart = null;
-        this.input.on('pointerdown', (p) => {
-            if (p.x < 360) this.swipeStart = { x: p.x, y: p.y };
-            else this.touchAtk = true;
-        });
-        this.input.on('pointermove', (p) => {
-            if (this.swipeStart) {
-                const dx = p.x - this.swipeStart.x;
-                this.touchDir = Math.abs(dx) > 10 ? Math.sign(dx) : 0;
-            }
-        });
-        this.input.on('pointerup', () => { this.swipeStart = null; this.touchDir = 0; this.touchAtk = false; });
-        // UI Graphics (Ammo Circle)
-        this.uiGfx = this.add.graphics().setDepth(15);
-        // Warning container
+
+        // UI Graphics and Group
+        this.uiGfx = this.add.graphics();
         this.warnings = this.add.group();
         this.createUI();
-        // Stage start text
+
+        // Final depth text
         const diff = GameState.getDifficultyLabel();
-        const stTxt = this.add.text(360, 540, `Stage ${GameState.currentStage}\n${diff}`, {
-            fontSize: '48px', fontFamily: 'Orbitron', color: '#00ddff', align: 'center', fontStyle: 'bold'
+        const stTxt = this.add.text(360, 640, `Stage ${GameState.currentStage}\n${diff}`, {
+            fontSize: '56px', fontFamily: 'Orbitron, sans-serif', color: '#00ddff', align: 'center', fontStyle: 'bold'
         }).setOrigin(0.5).setScrollFactor(0).setDepth(100);
-        this.tweens.add({ targets: stTxt, alpha: 0, y: 480, duration: 2000, delay: 800, onComplete: () => stTxt.destroy() });
+        this.tweens.add({ targets: stTxt, alpha: 0, y: 580, duration: 2000, delay: 1000, onComplete: () => stTxt.destroy() });
+
+        // IMPORTANT: Ignore HUD elements on main camera so they only show on UI camera
+        this.cameras.main.ignore([this.uiContainer, this.uiGfx]);
+        this.uiCamera.ignore([this.platforms, this.enemyGroup, this.player, this.bullets, this.spikeGroup]);
+
         this.speedLines = [];
     }
 
@@ -543,8 +530,14 @@ class GameScene extends Phaser.Scene {
         const camY = this.cameras.main.scrollY;
         if (camY < this.autoScrollY) this.cameras.main.scrollY = this.autoScrollY;
 
-        // Relaxed upper death boundary (200px buffer for large recoils)
-        if (this.player.y < this.cameras.main.scrollY - 200) { this.playerDeath(); return; }
+        // Enhanced death check for high recoil
+        if (this.player.y < this.cameras.main.scrollY) {
+            this.offScreenTimer += dt;
+            if (this.offScreenTimer > 2.5) { this.playerDeath(); return; } // Give 2.5 seconds buffer
+        } else {
+            this.offScreenTimer = 0;
+        }
+
         const fallSpeed = Math.abs(this.player.body.velocity.y);
         if (fallSpeed > 250) this.spawnSpeedLines(fallSpeed);
 
