@@ -4,7 +4,14 @@ const GameState = {
     currentStage: 1, hp: 100, maxHp: 100, attack: 10,
     moveSpeed: 450, items: [], shieldCount: 0,
     reviveAvailable: false, fullReviveAvailable: false,
-    collection: JSON.parse(localStorage.getItem('abyssCollection') || '[]'),
+    collection: (() => {
+        try {
+            return JSON.parse(localStorage.getItem('abyssCollection') || '[]');
+        } catch (e) {
+            console.warn('LocalStorage access blocked, using memory fallback');
+            return [];
+        }
+    })(),
 
     reset(full) {
         if (full) { this.level = 1; this.xp = 0; this.xpToNext = 100; this.luck = 0; this.score = 0; }
@@ -88,7 +95,11 @@ const GameState = {
     addToCollection(id) {
         if (!this.collection.includes(id)) {
             this.collection.push(id);
-            localStorage.setItem('abyssCollection', JSON.stringify(this.collection));
+            try {
+                localStorage.setItem('abyssCollection', JSON.stringify(this.collection));
+            } catch (e) {
+                console.error('Failed to save collection to LocalStorage:', e);
+            }
         }
     },
     rollItems(count) {
