@@ -277,7 +277,7 @@ class GameScene extends Phaser.Scene {
         // Bullets
         this.bullets = this.physics.add.group();
         // Player
-        this.player = this.physics.add.sprite(360, 80, 'player');
+        this.player = this.physics.add.sprite(360, 300, 'player');
         this.player.setCollideWorldBounds(true);
         this.player.body.setGravityY(450 * GameState.getFallMod()); // 1.5x gravity
         this.player.setDepth(10);
@@ -543,7 +543,8 @@ class GameScene extends Phaser.Scene {
         const camY = this.cameras.main.scrollY;
         if (camY < this.autoScrollY) this.cameras.main.scrollY = this.autoScrollY;
 
-        if (this.player.y < this.cameras.main.scrollY - 30) { this.playerDeath(); return; }
+        // Relaxed upper death boundary (200px buffer for large recoils)
+        if (this.player.y < this.cameras.main.scrollY - 200) { this.playerDeath(); return; }
         const fallSpeed = Math.abs(this.player.body.velocity.y);
         if (fallSpeed > 250) this.spawnSpeedLines(fallSpeed);
 
@@ -578,11 +579,11 @@ class GameScene extends Phaser.Scene {
         this.drawCircularAmmo();
         this.updateEnemyWarnings();
 
-        // Spawn interceptors more aggressively
+        // Spawn interceptors more aggressively (Fixed double timer)
         this.interceptorTimer += dt;
-        if (this.interceptorTimer > this.interceptorInterval / 3) { // 3x Spawn rate
+        if (this.interceptorTimer > this.interceptorInterval / 3) {
             this.spawnInterceptor();
-            if (Math.random() < 0.4) this.spawnInterceptor(); // Chance for double spawn
+            if (Math.random() < 0.4) this.spawnInterceptor();
             this.interceptorTimer = 0;
         }
         // Invincibility timer
@@ -633,12 +634,14 @@ class GameScene extends Phaser.Scene {
                 e.destroy();
             }
         });
-        // Interceptor spawner - 定期的に画面下から敵を生成
+        // Interceptor spawner removed (Handled by aggressive logic above)
+        /*
         this.interceptorTimer += dt;
         if (this.interceptorTimer >= this.interceptorInterval) {
             this.interceptorTimer = 0;
             this.spawnInterceptor();
         }
+        */
         // Clean up bullets
         this.bullets.children.iterate(b => {
             if (!b || !b.active) return;
