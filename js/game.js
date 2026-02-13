@@ -158,10 +158,10 @@ class BootScene extends Phaser.Scene {
         g.lineStyle(4, 0xff0000); g.strokeCircle(20, 20, 18);
         g.fillStyle(0xff0000); g.fillRect(18, 8, 4, 15); g.fillCircle(20, 28, 3);
         g.generateTexture('warning', 40, 40); g.clear();
-        // Bullet (larger)
-        g.fillStyle(0xffff00); g.fillCircle(6, 6, 6);
-        g.fillStyle(0xffaa00); g.fillCircle(6, 6, 3);
-        g.generateTexture('bullet', 12, 12); g.clear();
+        // Bullet (Giant: 1:1 with player width)
+        g.fillStyle(0xffff00); g.fillCircle(24, 24, 24);
+        g.fillStyle(0xffaa00); g.fillCircle(24, 24, 12);
+        g.generateTexture('bullet', 48, 48); g.clear();
         // Shell casing
         g.fillStyle(0xddaa44); g.fillRect(0, 0, 4, 8);
         g.fillStyle(0xbb8833); g.fillRect(0, 0, 4, 2);
@@ -172,10 +172,10 @@ class BootScene extends Phaser.Scene {
         // Speed line
         g.fillStyle(0xffffff, 0.4); g.fillRect(0, 0, 2, 40);
         g.generateTexture('speed_line', 2, 40); g.clear();
-        // Muzzle flash
-        g.fillStyle(0xffff88, 0.8); g.fillCircle(12, 12, 12);
-        g.fillStyle(0xffffff, 0.5); g.fillCircle(12, 12, 6);
-        g.generateTexture('muzzle_flash', 24, 24); g.clear();
+        // Muzzle flash (Larger for giant bullets)
+        g.fillStyle(0xffff88, 0.9); g.fillCircle(32, 32, 32);
+        g.fillStyle(0xffffff, 0.6); g.fillCircle(32, 32, 16);
+        g.generateTexture('muzzle_flash', 64, 64); g.clear();
         // Goal
         g.fillStyle(0xffdd00); g.fillRect(0, 0, 90, 18);
         g.fillStyle(0xffaa00); g.fillTriangle(45, 0, 22, 18, 68, 18);
@@ -299,8 +299,9 @@ class GameScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.goal, this.onGoal, null, this);
         this.physics.add.overlap(this.player, this.xpOrbs, this.collectXP, null, this);
         this.physics.add.overlap(this.bullets, this.enemyGroup, this.onBulletHitEnemy, null, this);
-        // Camera
-        this.cameras.main.startFollow(this.player, false, 0.1, 0.3, 0, -180); // Center at top 1/3
+        // Camera (Optimized Zoom for High Density)
+        this.cameras.main.startFollow(this.player, false, 0.1, 0.3, 0, -320);
+        this.cameras.main.setZoom(0.85); // Zoom out slightly to see more of the chaos below
         this.autoScrollY = 0;
         this.baseScrollSpeed = 22 + GameState.getDifficulty() * 12 + GameState.currentStage * 3;
         this.dynamicAccel = 0;
@@ -377,27 +378,31 @@ class GameScene extends Phaser.Scene {
 
     spawnEnemies() {
         const diff = GameState.getDifficulty();
-        const rate = 0.25 + diff * 0.08;
-        const redRatio = 0.3 + diff * 0.1;
-        // ① パトロール型: 足場の上を左右に往復
+        const baseRate = 0.6 + diff * 0.15; // Triple density approx
+
         this.platforms.children.iterate(p => {
             if (p.y < 200 || p.y > this.stageHeight - 200) return;
-            if (Math.random() > rate) return;
-            const isRed = Math.random() < redRatio;
-            this.createEnemy(p.x, p.y - 24, isRed, 'patrol', p);
-        });
-        // ③ ハンター型: NORMAL難易度以上で出現
-        if (diff >= 1) {
-            const hunterCount = Math.floor(1 + diff * 1.5);
-            for (let i = 0; i < hunterCount; i++) {
-                const hy = Phaser.Math.Between(400, this.stageHeight - 400);
-                const hx = Phaser.Math.Between(60, 660);
-                this.createEnemy(hx, hy, true, 'hunter', null);
+
+            // Pattern 1: Basic probability
+            if (Math.random() < baseRate) {
+                this.createEnemy(p.x, p.y - 32, Math.random() < 0.4, 'patrol', p);
             }
+
+            // Pattern 2: Rows of enemies on wider platforms
+            if (p.scaleX > 2 && Math.random() < 0.5) {
+                const count = Math.floor(p.scaleX);
+                for (let i = 0; i < count; i++) {
+                    const offsetX = (i - (count - 1) / 2) * 50;
+                    this.createEnemy(p.x + offsetX, p.y - 32, Math.random() < 0.3, 'patrol', p);
+                }
+            }
+        });
+
+        // Massive Hunters
+        const hunterCount = Math.floor(5 + diff * 3);
+        for (let i = 0; i < hunterCount; i++) {
+            this.createEnemy(Phaser.Math.Between(60, 660), Phaser.Math.Between(500, this.stageHeight - 400), true, 'hunter', null);
         }
-        // ② インターセプター型: update内で動的にスポーン
-        this.interceptorTimer = 0;
-        this.interceptorInterval = Math.max(1.5, 4 - diff * 0.5);
     }
 
     createEnemy(x, y, isRed, aiType, platform) {
@@ -445,9 +450,23 @@ class GameScene extends Phaser.Scene {
         const diff = GameState.getDifficulty();
         const camBottom = this.cameras.main.scrollY + 1100;
         if (camBottom > this.stageHeight - 100) return;
-        const x = Phaser.Math.Between(60, 660);
-        const isRed = Math.random() < (0.4 + diff * 0.1);
-        this.createEnemy(x, camBottom, isRed, 'interceptor', null);
+
+        const pattern = Math.random();
+        if (pattern < 0.6) {
+            // Single spawn
+            this.createEnemy(Phaser.Math.Between(60, 660), camBottom, Math.random() < 0.4, 'interceptor', null);
+        } else if (pattern < 0.85) {
+            // V-Formation
+            const centerX = Phaser.Math.Between(150, 570);
+            this.createEnemy(centerX, camBottom, true, 'interceptor', null);
+            this.createEnemy(centerX - 60, camBottom + 50, false, 'interceptor', null);
+            this.createEnemy(centerX + 60, camBottom + 50, false, 'interceptor', null);
+        } else {
+            // Horizontal Wall
+            for (let i = 0; i < 4; i++) {
+                this.createEnemy(120 + i * 160, camBottom, i % 2 === 0, 'interceptor', null);
+            }
+        }
     }
 
     setupTouchControls() {
@@ -560,7 +579,13 @@ class GameScene extends Phaser.Scene {
         this.drawCircularAmmo();
         this.updateEnemyWarnings();
 
-        // Enemies AI... (existing logic remains below)
+        // Spawn interceptors more aggressively
+        this.interceptorTimer += dt;
+        if (this.interceptorTimer > this.interceptorInterval / 3) { // 3x Spawn rate
+            this.spawnInterceptor();
+            if (Math.random() < 0.4) this.spawnInterceptor(); // Chance for double spawn
+            this.interceptorTimer = 0;
+        }
         // Invincibility timer
         if (this.player.invTime > 0) {
             this.player.invTime -= dt;
@@ -636,51 +661,53 @@ class GameScene extends Phaser.Scene {
     shootGunBoot() {
         if (this.ammo <= 0) return;
         this.ammo--;
-        this.shootCooldown = 0.15;
+        this.shootCooldown = 0.12; // Slightly faster fire rate
         const atk = GameState.getAtk();
         const hits = GameState.hasEffect('doubleHit') ? 2 : 1;
         for (let h = 0; h < hits; h++) {
-            const offsetX = hits > 1 ? (h === 0 ? -8 : 8) : 0;
-            const b = this.bullets.create(this.player.x + offsetX, this.player.y + 28, 'bullet');
-            b.setVelocityY(500);
-            b.body.setGravityY(-450);
+            const offsetX = hits > 1 ? (h === 0 ? -12 : 12) : 0;
+            const b = this.bullets.create(this.player.x + offsetX, this.player.y + 40, 'bullet');
+            b.setVelocityY(600);
+            b.body.setGravityY(-600);
             b.damage = atk;
             b.setDepth(5);
+            // Giant hitboxes for giant bullets
+            b.body.setSize(48, 48);
         }
-        // Recoil
-        const recoilForce = -160 - (GameState.hasEffect('antiGravity') ? 50 : 0);
+        // Recoil (Slightly stronger for the massive bullets)
+        const recoilForce = -220 - (GameState.hasEffect('antiGravity') ? 60 : 0);
         this.player.setVelocityY(Math.min(this.player.body.velocity.y + recoilForce, recoilForce));
-        // Muzzle flash
-        const flash = this.add.image(this.player.x, this.player.y + 30, 'muzzle_flash').setScale(2).setAlpha(0.9).setDepth(9);
-        this.tweens.add({ targets: flash, scale: 0.4, alpha: 0, duration: 100, onComplete: () => flash.destroy() });
-        // Shell casing ejection
+        // Massive Muzzle flash
+        const flash = this.add.image(this.player.x, this.player.y + 45, 'muzzle_flash').setScale(1.5).setAlpha(0.9).setDepth(15);
+        this.tweens.add({ targets: flash, scale: 2.2, alpha: 0, duration: 150, onComplete: () => flash.destroy() });
+        // Shell casing ejection (Larger)
         const shellDir = this.player.facingRight ? 1 : -1;
         for (let i = 0; i < 2; i++) {
-            const shell = this.add.image(this.player.x + shellDir * 10, this.player.y + 20, 'shell').setDepth(8);
+            const shell = this.add.image(this.player.x + shellDir * 15, this.player.y + 30, 'shell').setDepth(8).setScale(1.5);
             this.tweens.add({
                 targets: shell,
-                x: shell.x + shellDir * Phaser.Math.Between(15, 40),
-                y: shell.y + Phaser.Math.Between(-30, -10),
-                angle: Phaser.Math.Between(90, 360),
-                alpha: 0, duration: 500,
+                x: shell.x + shellDir * Phaser.Math.Between(20, 60),
+                y: shell.y + Phaser.Math.Between(-40, -10),
+                angle: Phaser.Math.Between(90, 720),
+                alpha: 0, duration: 600,
                 onComplete: () => shell.destroy()
             });
         }
         // Fire sparks
-        for (let i = 0; i < 4; i++) {
-            const sp = this.add.image(this.player.x + Phaser.Math.Between(-8, 8), this.player.y + 26, 'spark').setDepth(8);
+        for (let i = 0; i < 6; i++) {
+            const sp = this.add.image(this.player.x + Phaser.Math.Between(-12, 12), this.player.y + 40, 'spark').setDepth(15).setScale(1.5);
             this.tweens.add({
                 targets: sp,
-                x: sp.x + Phaser.Math.Between(-20, 20),
-                y: sp.y + Phaser.Math.Between(15, 45),
-                alpha: 0, scale: 0, duration: Phaser.Math.Between(150, 300),
+                x: sp.x + Phaser.Math.Between(-30, 30),
+                y: sp.y + Phaser.Math.Between(20, 60),
+                alpha: 0, scale: 0, duration: Phaser.Math.Between(200, 400),
                 onComplete: () => sp.destroy()
             });
         }
         // Speed lines on recoil
-        this.spawnSpeedLines(400);
+        this.spawnSpeedLines(500);
         // Screen shake
-        this.cameras.main.shake(50, 0.005);
+        this.cameras.main.shake(70, 0.007);
     }
 
     spawnSpeedLines(speed) {
