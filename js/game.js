@@ -4,16 +4,16 @@
 
 // --- ゲーム状態管理 ---
 const GameState = {
-    mode: 'NORMAL', level: 1, xp: 0, xpToNext: 100, luck: 0,
+    mode: 'NORMAL', level: 1, xp: 0, xpToNext: 100, luck: 0, score: 0,
     currentStage: 1, hp: 100, maxHp: 100, attack: 10,
-    moveSpeed: 200, items: [], shieldCount: 0,
+    moveSpeed: 450, items: [], shieldCount: 0,
     reviveAvailable: false, fullReviveAvailable: false,
     collection: JSON.parse(localStorage.getItem('abyssCollection') || '[]'),
 
     reset(full) {
-        if (full) { this.level = 1; this.xp = 0; this.xpToNext = 100; this.luck = 0; }
+        if (full) { this.level = 1; this.xp = 0; this.xpToNext = 100; this.luck = 0; this.score = 0; }
         this.currentStage = 1; this.hp = 100; this.maxHp = 100;
-        this.attack = 10; this.moveSpeed = 200; this.items = [];
+        this.attack = 10; this.moveSpeed = 450; this.items = [];
         this.shieldCount = 0; this.reviveAvailable = false; this.fullReviveAvailable = false;
     },
     getDifficulty() {
@@ -124,46 +124,40 @@ class BootScene extends Phaser.Scene {
     constructor() { super('Boot'); }
     create() {
         const g = this.make.graphics({ x: 0, y: 0, add: false });
-        // Player (larger)
-        g.clear(); g.fillStyle(0x00ddff); g.fillRoundedRect(0, 0, 36, 48, 6);
-        g.fillStyle(0x0099cc); g.fillRect(6, 9, 9, 9); g.fillRect(21, 9, 9, 9);
-        g.fillStyle(0x00ffff); g.fillRect(9, 12, 3, 3); g.fillRect(24, 12, 3, 3);
-        g.fillStyle(0x0088aa); g.fillRect(10, 38, 16, 8);
-        g.generateTexture('player', 36, 48); g.clear();
-        // Platforms (larger)
-        g.fillStyle(0x556677); g.fillRoundedRect(0, 0, 120, 20, 4);
-        g.fillStyle(0x667788); g.fillRect(3, 3, 114, 5);
-        g.generateTexture('platform', 120, 20); g.clear();
+        // Player (2x scale visual)
+        g.clear(); g.fillStyle(0x00ddff); g.fillRoundedRect(0, 0, 48, 64, 8);
+        g.fillStyle(0x0099cc); g.fillRect(8, 12, 12, 12); g.fillRect(28, 12, 12, 12);
+        g.fillStyle(0x00ffff); g.fillRect(12, 16, 4, 4); g.fillRect(32, 16, 4, 4);
+        g.fillStyle(0x0088aa); g.fillRect(13, 50, 22, 10);
+        g.generateTexture('player', 48, 64); g.clear();
+        // Platforms (2x width)
+        g.fillStyle(0x556677); g.fillRoundedRect(0, 0, 160, 32, 6);
+        g.fillStyle(0x667788); g.fillRect(4, 4, 152, 8);
+        g.generateTexture('platform', 160, 32); g.clear();
         // Spikes
         g.fillStyle(0xff3333);
-        g.fillTriangle(0, 24, 15, 0, 30, 24);
-        g.fillTriangle(30, 24, 45, 0, 60, 24);
-        g.fillTriangle(60, 24, 75, 0, 90, 24);
-        g.fillStyle(0xaa1111);
-        g.fillTriangle(15, 24, 30, 6, 45, 24);
-        g.fillTriangle(45, 24, 60, 6, 75, 24);
-        g.generateTexture('spike', 90, 24); g.clear();
+        g.fillTriangle(0, 32, 20, 0, 40, 32);
+        g.fillTriangle(40, 32, 60, 0, 80, 32);
+        g.fillTriangle(80, 32, 100, 0, 120, 32);
+        g.generateTexture('spike', 120, 32); g.clear();
         // Enemies - Red (larger)
-        g.clear(); g.fillStyle(0xff3333); g.fillCircle(16, 16, 16);
-        g.fillStyle(0xcc0000); g.fillCircle(16, 16, 11);
-        g.fillStyle(0x000000); g.fillCircle(10, 12, 4); g.fillCircle(22, 12, 4);
-        g.fillStyle(0xff8888); g.fillCircle(10, 11, 2); g.fillCircle(22, 11, 2);
-        g.fillStyle(0xff0000); g.fillTriangle(5, 0, 16, 7, 0, 7);
-        g.fillTriangle(27, 0, 32, 7, 16, 7);
-        g.generateTexture('enemy_red', 32, 32); g.clear();
-        // Enemies - White (larger)
-        g.fillStyle(0xeeeeff); g.fillCircle(16, 16, 16);
-        g.fillStyle(0xccccdd); g.fillCircle(16, 16, 11);
-        g.fillStyle(0x4444aa); g.fillCircle(10, 12, 4); g.fillCircle(22, 12, 4);
-        g.fillStyle(0xffffff); g.fillCircle(10, 11, 2); g.fillCircle(22, 11, 2);
-        g.generateTexture('enemy_white', 32, 32); g.clear();
-        // Enemies - Hunter (larger, purple)
-        g.fillStyle(0xcc44ff); g.fillCircle(16, 16, 16);
-        g.fillStyle(0x9922cc); g.fillCircle(16, 16, 11);
-        g.fillStyle(0x000000); g.fillCircle(10, 11, 5); g.fillCircle(22, 11, 5);
-        g.fillStyle(0xff00ff); g.fillCircle(10, 11, 3); g.fillCircle(22, 11, 3);
-        g.fillStyle(0xaa33ee); g.fillTriangle(16, 28, 8, 36, 24, 36);
-        g.generateTexture('enemy_hunter', 32, 38); g.clear();
+        g.clear(); g.fillStyle(0xff3333); g.fillCircle(24, 24, 24);
+        g.fillStyle(0xcc0000); g.fillCircle(24, 24, 16);
+        g.fillStyle(0x000000); g.fillCircle(15, 18, 6); g.fillCircle(33, 18, 6);
+        g.generateTexture('enemy_red', 48, 48); g.clear();
+        // Enemies - White
+        g.fillStyle(0xeeeeff); g.fillCircle(24, 24, 24);
+        g.fillStyle(0xccccdd); g.fillCircle(24, 24, 16);
+        g.fillStyle(0x4444aa); g.fillCircle(15, 18, 6); g.fillCircle(33, 18, 6);
+        g.generateTexture('enemy_white', 48, 48); g.clear();
+        // Enemies - Hunter
+        g.fillStyle(0xcc44ff); g.fillCircle(24, 24, 24);
+        g.fillStyle(0x000000); g.fillCircle(15, 15, 8); g.fillCircle(33, 15, 8);
+        g.generateTexture('enemy_hunter', 48, 48); g.clear();
+        // Warning Icon
+        g.lineStyle(4, 0xff0000); g.strokeCircle(20, 20, 18);
+        g.fillStyle(0xff0000); g.fillRect(18, 8, 4, 15); g.fillCircle(20, 28, 3);
+        g.generateTexture('warning', 40, 40); g.clear();
         // Bullet (larger)
         g.fillStyle(0xffff00); g.fillCircle(6, 6, 6);
         g.fillStyle(0xffaa00); g.fillCircle(6, 6, 3);
@@ -306,31 +300,45 @@ class GameScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.xpOrbs, this.collectXP, null, this);
         this.physics.add.overlap(this.bullets, this.enemyGroup, this.onBulletHitEnemy, null, this);
         // Camera
-        this.cameras.main.startFollow(this.player, false, 0.1, 0.3, 0, -180);
+        this.cameras.main.startFollow(this.player, false, 0.1, 0.3, 0, -180); // Center at top 1/3
         this.autoScrollY = 0;
         this.baseScrollSpeed = 22 + GameState.getDifficulty() * 12 + GameState.currentStage * 3;
-        this.dynamicAccel = 0; // Dynamic acceleration
-        this.stageTime = 0; // Time elapsed in stage
+        this.dynamicAccel = 0;
+        this.stageTime = 0;
+        this.combo = 0;
         // Controls
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        this.shootCooldown = 0;
-        this.goalReached = false;
-        this.spaceWasDown = false;
-        // Touch controls
-        this.touchDir = 0; this.touchAtk = false;
-        this.setupTouchControls();
-        // UI
+        this.keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        this.keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+        // Hybrid Controls
+        this.touchDir = 0;
+        this.touchAtk = false;
+        this.swipeStart = null;
+        this.input.on('pointerdown', (p) => {
+            if (p.x < 360) this.swipeStart = { x: p.x, y: p.y };
+            else this.touchAtk = true;
+        });
+        this.input.on('pointermove', (p) => {
+            if (this.swipeStart) {
+                const dx = p.x - this.swipeStart.x;
+                this.touchDir = Math.abs(dx) > 10 ? Math.sign(dx) : 0;
+            }
+        });
+        this.input.on('pointerup', () => { this.swipeStart = null; this.touchDir = 0; this.touchAtk = false; });
+        // UI Graphics (Ammo Circle)
+        this.uiGfx = this.add.graphics().setDepth(15);
+        // Warning container
+        this.warnings = this.add.group();
         this.createUI();
         // Stage start text
         const diff = GameState.getDifficultyLabel();
         const stTxt = this.add.text(360, 540, `Stage ${GameState.currentStage}\n${diff}`, {
-            fontSize: '40px', fontFamily: 'sans-serif', color: '#00ddff', align: 'center', fontStyle: 'bold'
+            fontSize: '48px', fontFamily: 'Orbitron', color: '#00ddff', align: 'center', fontStyle: 'bold'
         }).setOrigin(0.5).setScrollFactor(0).setDepth(100);
         this.tweens.add({ targets: stTxt, alpha: 0, y: 480, duration: 2000, delay: 800, onComplete: () => stTxt.destroy() });
-        // Speed lines container
         this.speedLines = [];
     }
 
@@ -461,83 +469,98 @@ class GameScene extends Phaser.Scene {
 
     createUI() {
         this.uiContainer = this.add.container(0, 0).setScrollFactor(0).setDepth(100);
-        // Top bar (compact)
-        this.uiContainer.add(this.add.rectangle(360, 18, 720, 36, 0x000000, 0.65).setScrollFactor(0));
-        this.stageText = this.add.text(10, 8, '', { fontSize: '12px', color: '#aabbcc' }).setScrollFactor(0);
-        this.levelText = this.add.text(10, 22, '', { fontSize: '11px', color: '#00ddff' }).setScrollFactor(0);
-        this.xpBg = this.add.rectangle(200, 14, 100, 8, 0x222233).setScrollFactor(0);
-        this.xpBar = this.add.rectangle(151, 14, 0, 6, 0x00ddff).setScrollFactor(0).setOrigin(0, 0.5);
-        this.diffText = this.add.text(710, 14, '', { fontSize: '11px', color: '#ffaa00' }).setScrollFactor(0).setOrigin(1, 0.5);
-        this.uiContainer.add([this.stageText, this.levelText, this.xpBg, this.xpBar, this.diffText]);
-        // Floating HUD (follows player)
-        this.floatHpBg = this.add.rectangle(0, 0, 50, 6, 0x333333, 0.7).setDepth(15);
-        this.floatHpBar = this.add.rectangle(0, 0, 48, 4, 0x00ff66).setDepth(15).setOrigin(0, 0.5);
+        // Top HUD Shadow
+        this.uiContainer.add(this.add.rectangle(360, 50, 720, 100, 0x000000, 0.5));
+
+        // LARGE Score and Combo
+        this.scoreLabel = this.add.text(360, 45, 'SCORE: 0', { fontSize: '36px', fontFamily: 'Orbitron', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5).setScrollFactor(0);
+        this.hpLabel = this.add.text(20, 15, 'HP', { fontSize: '24px', fontFamily: 'Orbitron', color: '#ff3366', fontStyle: 'bold' }).setScrollFactor(0);
+        this.hpBarBgUI = this.add.rectangle(65, 30, 200, 20, 0x330011).setOrigin(0, 0.5).setScrollFactor(0);
+        this.hpBarFillUI = this.add.rectangle(65, 30, 200, 20, 0xff3366).setOrigin(0, 0.5).setScrollFactor(0);
+
+        this.comboLabel = this.add.text(700, 45, '', { fontSize: '40px', fontFamily: 'Orbitron', color: '#ffdd00', fontStyle: '900' }).setOrigin(1, 0.5).setScrollFactor(0);
+
+        this.uiContainer.add([this.scoreLabel, this.hpLabel, this.hpBarBgUI, this.hpBarFillUI, this.comboLabel]);
+
+        // Floating HUD for player (retained but simplified)
+        this.floatContainer = this.add.container(0, 0).setDepth(10);
+        this.floatLevel = this.add.text(0, -55, 'Lv.1', { fontSize: '18px', color: '#00ddff', fontStyle: 'bold' }).setOrigin(0.5);
+        this.floatContainer.add(this.floatLevel);
+
+        // Ammo dots near player (still needed)
         this.floatAmmoText = this.add.text(0, 0, '', { fontSize: '10px', color: '#ffaa00', fontStyle: 'bold', stroke: '#000', strokeThickness: 2 }).setOrigin(0.5).setDepth(15);
+        this.floatContainer.add(this.floatAmmoText);
     }
     updateUI() {
-        const hpRatio = GameState.hp / GameState.maxHp;
-        // Floating HUD - follows player
-        const px = this.player.x, py = this.player.y - 40;
-        this.floatHpBg.setPosition(px, py);
-        this.floatHpBar.setPosition(px - 24, py);
-        this.floatHpBar.setScale(hpRatio, 1);
-        this.floatHpBar.setFillStyle(hpRatio > 0.5 ? 0x00ff66 : hpRatio > 0.25 ? 0xffaa00 : 0xff3333);
+        this.scoreLabel.setText(`SCORE: ${GameState.score}`);
+        if (this.combo > 1) {
+            this.comboLabel.setText(`${this.combo} COMBO`).setScale(1 + Math.sin(this.time.now * 0.01) * 0.05);
+        } else {
+            this.comboLabel.setText('');
+        }
+
+        const hpRate = GameState.hp / GameState.maxHp;
+        this.hpBarFillUI.width = 200 * hpRate;
+        this.hpBarFillUI.setFillStyle(hpRate > 0.5 ? 0x00ff66 : hpRate > 0.25 ? 0xffaa00 : 0xff3333);
+
+        this.floatLevel.setText(`Lv.${GameState.level}`);
+
+        this.floatContainer.setPosition(this.player.x, this.player.y);
+
         // Ammo dots near player
         let ammoStr = '';
         for (let i = 0; i < this.maxAmmo; i++) ammoStr += i < this.ammo ? '●' : '○';
-        this.floatAmmoText.setPosition(px, py - 10);
+        this.floatAmmoText.setPosition(0, -10); // Relative to floatContainer
         this.floatAmmoText.setText(ammoStr);
         this.floatAmmoText.setColor(this.ammo > 0 ? '#ffaa00' : '#ff3333');
-        // Top bar
-        this.stageText.setText(`Stage ${GameState.currentStage} | ${GameState.getDifficultyLabel()} | HP:${GameState.hp}/${GameState.maxHp}`);
-        this.levelText.setText(`Lv.${GameState.level} | ATK:${GameState.getAtk()}`);
-        const xpRatio = GameState.xp / GameState.xpToNext;
-        this.xpBar.width = xpRatio * 98;
-        this.xpBar.setScale(Math.min(xpRatio * 98, 98), 1);
-        this.diffText.setText(`弾:${this.ammo}/${this.maxAmmo}`);
     }
 
     update(time, delta) {
-        if (this.goalReached) return;
+        if (this.goalReached || !this.player.active) return;
         const dt = delta / 1000;
         this.stageTime += dt;
-        // Dynamic acceleration
-        this.dynamicAccel = Math.min(this.stageTime * 0.4, 20);
+        this.dynamicAccel = Math.min(this.stageTime * 0.45, 25);
         const currentScrollSpeed = this.baseScrollSpeed + this.dynamicAccel;
-        // Auto scroll
         this.autoScrollY += currentScrollSpeed * dt;
         const camY = this.cameras.main.scrollY;
         if (camY < this.autoScrollY) this.cameras.main.scrollY = this.autoScrollY;
-        // Death by scroll
+
         if (this.player.y < this.cameras.main.scrollY - 30) { this.playerDeath(); return; }
-        // Speed lines effect
         const fallSpeed = Math.abs(this.player.body.velocity.y);
         if (fallSpeed > 250) this.spawnSpeedLines(fallSpeed);
-        // Ground check for ammo reload
+
         const onGround = this.player.body.blocked.down || this.player.body.touching.down;
         if (onGround && !this.wasOnGround) {
             this.reloadAmmo();
+            if (this.combo > 0) this.resetCombo();
         }
         this.wasOnGround = onGround;
+
         // Player movement
         let moveTarget = 0;
         if (this.cursors.left.isDown || this.keyA.isDown) moveTarget = -1;
         else if (this.cursors.right.isDown || this.keyD.isDown) moveTarget = 1;
         else if (this.touchDir !== 0) moveTarget = this.touchDir;
 
-        const moveSpeed = 450 + (GameState.hasEffect('speedUp') ? 80 : 0); // 300 -> 450
+        const moveSpeed = 450 + (GameState.hasEffect('speedUp') ? 80 : 0);
         this.player.setVelocityX(moveTarget * moveSpeed);
         if (moveTarget !== 0) {
             this.player.facingRight = moveTarget > 0;
             this.player.setFlipX(moveTarget < 0);
         }
-        // Gun Boot shooting (Space or touch) - single press
+
+        // Shooting
         this.shootCooldown -= dt;
-        const spaceDown = this.keySpace.isDown || this.touchAtk;
-        if (spaceDown && !this.spaceWasDown && this.shootCooldown <= 0) {
+        const isShooting = Phaser.Input.Keyboard.JustDown(this.keySpace) || this.touchAtk;
+        if (isShooting && this.ammo > 0 && this.shootCooldown <= 0) {
             this.shootGunBoot();
         }
-        this.spaceWasDown = spaceDown;
+
+        // Draw HUD Graphics
+        this.drawCircularAmmo();
+        this.updateEnemyWarnings();
+
+        // Enemies AI... (existing logic remains below)
         // Invincibility timer
         if (this.player.invTime > 0) {
             this.player.invTime -= dt;
@@ -687,7 +710,7 @@ class GameScene extends Phaser.Scene {
         if (!this.wasOnGround) {
             this.spawnLandingEffect(player.x, player.y + 24);
             // Dynamic HUD bounce on landing
-            this.tweens.add({ targets: [this.floatHpBg, this.floatHpBar, this.floatAmmoText], y: '+=5', duration: 50, yoyo: true });
+            // this.tweens.add({ targets: [this.floatHpBg, this.floatHpBar, this.floatAmmoText], y: '+=5', duration: 50, yoyo: true }); // Removed as per new UI
         }
     }
 
@@ -720,27 +743,36 @@ class GameScene extends Phaser.Scene {
     }
 
     killEnemy(e) {
-        GameState.addXP(e.eData.xp);
+        // Apply combo multiplier to XP and Score
+        const multiplier = 1 + (this.combo * 0.15);
+        const xpGain = Math.floor(e.eData.xp * multiplier);
+        const scoreGain = Math.floor(100 * multiplier);
+
+        GameState.addXP(xpGain);
+        GameState.score += scoreGain;
+
         if (GameState.hasEffect('lifeSteal')) {
             GameState.hp = Math.min(GameState.maxHp, GameState.hp + GameState.getEffectVal('lifeSteal'));
         }
+        // Combo increment
+        this.addCombo();
+
         // Spawn XP orb
         const orb = this.xpOrbs.create(e.x, e.y, 'xp_orb');
         orb.body.setGravityY(-250);
         this.tweens.add({ targets: orb, alpha: 0, duration: 3000, onComplete: () => orb.destroy() });
-        // Enhanced Death particles
+        // Death particles
         for (let i = 0; i < 12; i++) {
-            const p = this.add.circle(e.x, e.y, Phaser.Math.Between(3, 6), e.eData.color);
+            const p = this.add.circle(e.x, e.y, Phaser.Math.Between(4, 7), e.eData.color);
             const angle = Phaser.Math.Between(0, 360) * (Math.PI / 180);
-            const speed = Phaser.Math.Between(100, 250);
+            const speed = Phaser.Math.Between(150, 300);
             this.physics.add.existing(p);
             p.body.setVelocity(Math.cos(angle) * speed, Math.sin(angle) * speed);
             this.tweens.add({ targets: p, alpha: 0, scale: 0, duration: Phaser.Math.Between(400, 700), onComplete: () => p.destroy() });
         }
         // Ghost effect
-        const ghost = this.add.image(e.x, e.y, e.texture.key).setTint(0xffffff).setAlpha(0.6);
-        this.tweens.add({ targets: ghost, scale: 2, alpha: 0, duration: 200, onComplete: () => ghost.destroy() });
-
+        const ghost = this.add.image(e.x, e.y, e.texture.key).setTint(0xffffff).setAlpha(0.6).setScale(1.2);
+        this.tweens.add({ targets: ghost, scale: 2.5, alpha: 0, duration: 250, onComplete: () => ghost.destroy() });
         e.destroy();
     }
     collectXP(player, orb) { orb.destroy(); }
@@ -790,10 +822,9 @@ class GameScene extends Phaser.Scene {
 
     playerHitVFX() {
         this.player.invTime = 1.0;
-        this.cameras.main.shake(150, 0.012);
+        this.resetCombo();
+        this.cameras.main.shake(150, 0.015);
         this.cameras.main.flash(100, 255, 50, 50, true);
-
-        // Flash red
         this.player.setTint(0xff0000);
         const flashTimer = this.time.addEvent({
             delay: 100,
@@ -808,18 +839,17 @@ class GameScene extends Phaser.Scene {
             this.player.clearTint();
         });
 
-        // Hit particles
-        for (let i = 0; i < 10; i++) {
-            const p = this.add.image(this.player.x, this.player.y, 'spark').setTint(0xffffff);
+        for (let i = 0; i < 15; i++) {
+            const p = this.add.image(this.player.x, this.player.y, 'spark').setTint(0xffffff).setScale(1.5);
             const ang = Phaser.Math.Between(0, 360) * (Math.PI / 180);
-            const spd = Phaser.Math.Between(150, 350);
+            const spd = Phaser.Math.Between(200, 450);
             this.physics.add.existing(p);
             p.body.setVelocity(Math.cos(ang) * spd, Math.sin(ang) * spd);
-            this.tweens.add({ targets: p, alpha: 0, scale: 0, duration: 400, onComplete: () => p.destroy() });
+            this.tweens.add({ targets: p, alpha: 0, scale: 0, duration: 500, onComplete: () => p.destroy() });
         }
 
         // HUD impact
-        this.tweens.add({ targets: [this.floatHpBg, this.floatHpBar, this.floatAmmoText], x: '+=10', duration: 50, yoyo: true, repeat: 3 });
+        this.tweens.add({ targets: [this.hpBarBgUI, this.hpBarFillUI, this.hpLabel], x: '+=10', duration: 50, yoyo: true, repeat: 3 });
     }
 
     onGoal(player, goal) {
@@ -996,16 +1026,18 @@ class CollectionScene extends Phaser.Scene {
 // --- Phaser Config ---
 const config = {
     type: Phaser.AUTO,
-    width: 720, height: 1080,
+    width: 720, height: 1280, // Slightly taller for mobile
     parent: 'game-container',
-    backgroundColor: '#0a0a14',
+    backgroundColor: '#050510',
     physics: {
         default: 'arcade',
-        arcade: { gravity: { y: 450 }, debug: false }
+        arcade: { gravity: { y: 600 }, debug: false }
     },
     scale: {
         mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: 720,
+        height: 1280
     },
     scene: [BootScene, MenuScene, GameScene, ItemSelectScene, GameOverScene, CollectionScene]
 };
