@@ -124,71 +124,82 @@ class BootScene extends Phaser.Scene {
     constructor() { super('Boot'); }
     create() {
         const g = this.make.graphics({ x: 0, y: 0, add: false });
-        // Player
-        g.clear(); g.fillStyle(0x00ddff); g.fillRoundedRect(0, 0, 24, 32, 4);
-        g.fillStyle(0x0099cc); g.fillRect(4, 6, 6, 6); g.fillRect(14, 6, 6, 6);
-        g.fillStyle(0x00ffff); g.fillRect(6, 8, 2, 2); g.fillRect(16, 8, 2, 2);
-        g.generateTexture('player', 24, 32); g.clear();
-        // Platforms
-        g.fillStyle(0x556677); g.fillRoundedRect(0, 0, 80, 16, 3);
-        g.fillStyle(0x667788); g.fillRect(2, 2, 76, 4);
-        g.generateTexture('platform', 80, 16); g.clear();
-        // Spikes (トゲ)
+        // Player (larger)
+        g.clear(); g.fillStyle(0x00ddff); g.fillRoundedRect(0, 0, 36, 48, 6);
+        g.fillStyle(0x0099cc); g.fillRect(6, 9, 9, 9); g.fillRect(21, 9, 9, 9);
+        g.fillStyle(0x00ffff); g.fillRect(9, 12, 3, 3); g.fillRect(24, 12, 3, 3);
+        g.fillStyle(0x0088aa); g.fillRect(10, 38, 16, 8);
+        g.generateTexture('player', 36, 48); g.clear();
+        // Platforms (larger)
+        g.fillStyle(0x556677); g.fillRoundedRect(0, 0, 120, 20, 4);
+        g.fillStyle(0x667788); g.fillRect(3, 3, 114, 5);
+        g.generateTexture('platform', 120, 20); g.clear();
+        // Spikes
         g.fillStyle(0xff3333);
-        g.fillTriangle(0, 16, 10, 0, 20, 16);
-        g.fillTriangle(20, 16, 30, 0, 40, 16);
-        g.fillTriangle(40, 16, 50, 0, 60, 16);
+        g.fillTriangle(0, 24, 15, 0, 30, 24);
+        g.fillTriangle(30, 24, 45, 0, 60, 24);
+        g.fillTriangle(60, 24, 75, 0, 90, 24);
         g.fillStyle(0xaa1111);
-        g.fillTriangle(10, 16, 20, 4, 30, 16);
-        g.fillTriangle(30, 16, 40, 4, 50, 16);
-        g.generateTexture('spike', 60, 16); g.clear();
-        // Enemies - Red (can't stomp)
-        g.clear(); g.fillStyle(0xff3333); g.fillCircle(12, 12, 12);
-        g.fillStyle(0xcc0000); g.fillCircle(12, 12, 8);
-        g.fillStyle(0x000000); g.fillCircle(7, 9, 3); g.fillCircle(17, 9, 3);
-        g.fillStyle(0xff8888); g.fillCircle(7, 8, 1.5); g.fillCircle(17, 8, 1.5);
-        g.fillStyle(0xff0000); g.fillTriangle(4, 0, 12, 5, 0, 5);
-        g.fillTriangle(20, 0, 24, 5, 12, 5);
-        g.generateTexture('enemy_red', 24, 24); g.clear();
-        // Enemies - White (stompable)
-        g.fillStyle(0xeeeeff); g.fillCircle(12, 12, 12);
-        g.fillStyle(0xccccdd); g.fillCircle(12, 12, 8);
-        g.fillStyle(0x4444aa); g.fillCircle(7, 9, 3); g.fillCircle(17, 9, 3);
-        g.fillStyle(0xffffff); g.fillCircle(7, 8, 1.5); g.fillCircle(17, 8, 1.5);
-        g.generateTexture('enemy_white', 24, 24); g.clear();
-        // Enemies - Hunter (purple, chases player)
-        g.fillStyle(0xcc44ff); g.fillCircle(12, 12, 12);
-        g.fillStyle(0x9922cc); g.fillCircle(12, 12, 8);
-        g.fillStyle(0x000000); g.fillCircle(7, 8, 3.5); g.fillCircle(17, 8, 3.5);
-        g.fillStyle(0xff00ff); g.fillCircle(7, 8, 2); g.fillCircle(17, 8, 2);
-        g.fillStyle(0xaa33ee); g.fillTriangle(12, 20, 6, 26, 18, 26);
-        g.generateTexture('enemy_hunter', 24, 28); g.clear();
-        // Bullet
-        g.fillStyle(0xffff00); g.fillCircle(4, 4, 4);
-        g.fillStyle(0xffaa00); g.fillCircle(4, 4, 2);
-        g.generateTexture('bullet', 8, 8); g.clear();
+        g.fillTriangle(15, 24, 30, 6, 45, 24);
+        g.fillTriangle(45, 24, 60, 6, 75, 24);
+        g.generateTexture('spike', 90, 24); g.clear();
+        // Enemies - Red (larger)
+        g.clear(); g.fillStyle(0xff3333); g.fillCircle(16, 16, 16);
+        g.fillStyle(0xcc0000); g.fillCircle(16, 16, 11);
+        g.fillStyle(0x000000); g.fillCircle(10, 12, 4); g.fillCircle(22, 12, 4);
+        g.fillStyle(0xff8888); g.fillCircle(10, 11, 2); g.fillCircle(22, 11, 2);
+        g.fillStyle(0xff0000); g.fillTriangle(5, 0, 16, 7, 0, 7);
+        g.fillTriangle(27, 0, 32, 7, 16, 7);
+        g.generateTexture('enemy_red', 32, 32); g.clear();
+        // Enemies - White (larger)
+        g.fillStyle(0xeeeeff); g.fillCircle(16, 16, 16);
+        g.fillStyle(0xccccdd); g.fillCircle(16, 16, 11);
+        g.fillStyle(0x4444aa); g.fillCircle(10, 12, 4); g.fillCircle(22, 12, 4);
+        g.fillStyle(0xffffff); g.fillCircle(10, 11, 2); g.fillCircle(22, 11, 2);
+        g.generateTexture('enemy_white', 32, 32); g.clear();
+        // Enemies - Hunter (larger, purple)
+        g.fillStyle(0xcc44ff); g.fillCircle(16, 16, 16);
+        g.fillStyle(0x9922cc); g.fillCircle(16, 16, 11);
+        g.fillStyle(0x000000); g.fillCircle(10, 11, 5); g.fillCircle(22, 11, 5);
+        g.fillStyle(0xff00ff); g.fillCircle(10, 11, 3); g.fillCircle(22, 11, 3);
+        g.fillStyle(0xaa33ee); g.fillTriangle(16, 28, 8, 36, 24, 36);
+        g.generateTexture('enemy_hunter', 32, 38); g.clear();
+        // Bullet (larger)
+        g.fillStyle(0xffff00); g.fillCircle(6, 6, 6);
+        g.fillStyle(0xffaa00); g.fillCircle(6, 6, 3);
+        g.generateTexture('bullet', 12, 12); g.clear();
+        // Shell casing
+        g.fillStyle(0xddaa44); g.fillRect(0, 0, 4, 8);
+        g.fillStyle(0xbb8833); g.fillRect(0, 0, 4, 2);
+        g.generateTexture('shell', 4, 8); g.clear();
+        // Spark particle
+        g.fillStyle(0xffcc00); g.fillCircle(2, 2, 2);
+        g.generateTexture('spark', 4, 4); g.clear();
+        // Speed line
+        g.fillStyle(0xffffff, 0.4); g.fillRect(0, 0, 2, 40);
+        g.generateTexture('speed_line', 2, 40); g.clear();
         // Muzzle flash
-        g.fillStyle(0xffff88, 0.8); g.fillCircle(8, 8, 8);
-        g.fillStyle(0xffffff, 0.5); g.fillCircle(8, 8, 4);
-        g.generateTexture('muzzle_flash', 16, 16); g.clear();
+        g.fillStyle(0xffff88, 0.8); g.fillCircle(12, 12, 12);
+        g.fillStyle(0xffffff, 0.5); g.fillCircle(12, 12, 6);
+        g.generateTexture('muzzle_flash', 24, 24); g.clear();
         // Goal
-        g.fillStyle(0xffdd00); g.fillRect(0, 0, 60, 12);
-        g.fillStyle(0xffaa00); g.fillTriangle(30, 0, 15, 12, 45, 12);
-        g.generateTexture('goal', 60, 12); g.clear();
+        g.fillStyle(0xffdd00); g.fillRect(0, 0, 90, 18);
+        g.fillStyle(0xffaa00); g.fillTriangle(45, 0, 22, 18, 68, 18);
+        g.generateTexture('goal', 90, 18); g.clear();
         // XP orb
-        g.fillStyle(0x00ff88); g.fillCircle(6, 6, 6);
-        g.fillStyle(0xaaffcc); g.fillCircle(4, 4, 2);
-        g.generateTexture('xp_orb', 12, 12); g.clear();
+        g.fillStyle(0x00ff88); g.fillCircle(8, 8, 8);
+        g.fillStyle(0xaaffcc); g.fillCircle(5, 5, 3);
+        g.generateTexture('xp_orb', 16, 16); g.clear();
         // Attack effect
-        g.fillStyle(0xffffff, 0.7); g.fillCircle(16, 16, 16);
-        g.generateTexture('atk_fx', 32, 32); g.clear();
+        g.fillStyle(0xffffff, 0.7); g.fillCircle(20, 20, 20);
+        g.generateTexture('atk_fx', 40, 40); g.clear();
         // Particle
-        g.fillStyle(0xffffff); g.fillCircle(3, 3, 3);
-        g.generateTexture('particle', 6, 6); g.clear();
+        g.fillStyle(0xffffff); g.fillCircle(4, 4, 4);
+        g.generateTexture('particle', 8, 8); g.clear();
         // BG tile
-        g.fillStyle(0x0a0a14); g.fillRect(0, 0, 480, 60);
-        g.lineStyle(1, 0x151525); g.strokeRect(0, 0, 480, 60);
-        g.generateTexture('bg_tile', 480, 60); g.clear();
+        g.fillStyle(0x0a0a14); g.fillRect(0, 0, 720, 80);
+        g.lineStyle(1, 0x151525); g.strokeRect(0, 0, 720, 80);
+        g.generateTexture('bg_tile', 720, 80); g.clear();
         g.destroy();
         this.scene.start('Menu');
     }
@@ -199,41 +210,41 @@ class MenuScene extends Phaser.Scene {
     constructor() { super('Menu'); }
     create() {
         this.cameras.main.setBackgroundColor('#0a0a14');
-        const cx = 240, cy = 360;
+        const cx = 360, cy = 540;
         // Title
-        this.add.text(cx, 100, 'ABYSS FALL', {
-            fontSize: '52px', fontFamily: 'Orbitron, sans-serif',
+        this.add.text(cx, 150, 'ABYSS FALL', {
+            fontSize: '64px', fontFamily: 'Orbitron, sans-serif',
             color: '#00ddff', fontStyle: 'bold'
-        }).setOrigin(0.5).setShadow(0, 0, '#00ddff', 12);
-        this.add.text(cx, 155, '垂直落下型ローグライク・アクション', {
-            fontSize: '14px', fontFamily: 'sans-serif', color: '#6688aa'
+        }).setOrigin(0.5).setShadow(0, 0, '#00ddff', 16);
+        this.add.text(cx, 220, '垂直落下型ローグライク・アクション', {
+            fontSize: '16px', fontFamily: 'sans-serif', color: '#6688aa'
         }).setOrigin(0.5);
         // Floating particles
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 40; i++) {
             const p = this.add.circle(
-                Phaser.Math.Between(0, 480), Phaser.Math.Between(0, 720),
-                Phaser.Math.Between(1, 3), 0x00ddff, 0.3
+                Phaser.Math.Between(0, 720), Phaser.Math.Between(0, 1080),
+                Phaser.Math.Between(1, 4), 0x00ddff, 0.3
             );
             this.tweens.add({
-                targets: p, y: p.y - 100, alpha: 0, duration: Phaser.Math.Between(2000, 5000),
+                targets: p, y: p.y - 120, alpha: 0, duration: Phaser.Math.Between(2000, 5000),
                 repeat: -1, yoyo: true
             });
         }
         // Buttons
-        this.createBtn(cx, 300, 'NORMAL モード', '#00cc88', () => { GameState.mode = 'NORMAL'; GameState.reset(true); this.scene.start('Game'); });
-        this.add.text(cx, 340, '死亡時：アイテム消失、レベル維持', { fontSize: '11px', color: '#558866' }).setOrigin(0.5);
-        this.createBtn(cx, 400, 'HARD モード', '#ff4466', () => { GameState.mode = 'HARD'; GameState.reset(true); this.scene.start('Game'); });
-        this.add.text(cx, 440, '死亡時：全てリセット', { fontSize: '11px', color: '#885566' }).setOrigin(0.5);
-        this.createBtn(cx, 520, '📖 図鑑', '#8866ff', () => { this.scene.start('Collection'); });
+        this.createBtn(cx, 420, 'NORMAL モード', '#00cc88', () => { GameState.mode = 'NORMAL'; GameState.reset(true); this.scene.start('Game'); });
+        this.add.text(cx, 465, '死亡時：アイテム消失、レベル維持', { fontSize: '13px', color: '#558866' }).setOrigin(0.5);
+        this.createBtn(cx, 540, 'HARD モード', '#ff4466', () => { GameState.mode = 'HARD'; GameState.reset(true); this.scene.start('Game'); });
+        this.add.text(cx, 585, '死亡時：全てリセット', { fontSize: '13px', color: '#885566' }).setOrigin(0.5);
+        this.createBtn(cx, 700, '📖 図鑑', '#8866ff', () => { this.scene.start('Collection'); });
         // Info
-        this.add.text(cx, 650, '操作: ← → 移動 / SPACE ガンブーツ発射', { fontSize: '12px', color: '#445566' }).setOrigin(0.5);
-        this.add.text(cx, 670, '白い敵は踏んで倒せる / 赤い敵は弾で倒す', { fontSize: '11px', color: '#445566' }).setOrigin(0.5);
-        this.add.text(cx, 690, `最高レベル記録: Lv.${GameState.level}`, { fontSize: '12px', color: '#445566' }).setOrigin(0.5);
+        this.add.text(cx, 880, '操作: ← → 移動 / SPACE ガンブーツ発射', { fontSize: '14px', color: '#445566' }).setOrigin(0.5);
+        this.add.text(cx, 910, '白い敵は踏んで倒せる / 赤い敵は弾で倒す', { fontSize: '13px', color: '#445566' }).setOrigin(0.5);
+        this.add.text(cx, 950, `最高レベル記録: Lv.${GameState.level}`, { fontSize: '14px', color: '#445566' }).setOrigin(0.5);
     }
     createBtn(x, y, text, color, cb) {
-        const bg = this.add.rectangle(x, y, 260, 48, Phaser.Display.Color.HexStringToColor(color).color, 0.15)
+        const bg = this.add.rectangle(x, y, 340, 56, Phaser.Display.Color.HexStringToColor(color).color, 0.15)
             .setStrokeStyle(2, Phaser.Display.Color.HexStringToColor(color).color).setInteractive({ useHandCursor: true });
-        const txt = this.add.text(x, y, text, { fontSize: '20px', fontFamily: 'sans-serif', color: color, fontStyle: 'bold' }).setOrigin(0.5);
+        const txt = this.add.text(x, y, text, { fontSize: '22px', fontFamily: 'sans-serif', color: color, fontStyle: 'bold' }).setOrigin(0.5);
         bg.on('pointerover', () => { bg.setFillStyle(Phaser.Display.Color.HexStringToColor(color).color, 0.3); });
         bg.on('pointerout', () => { bg.setFillStyle(Phaser.Display.Color.HexStringToColor(color).color, 0.15); });
         bg.on('pointerdown', cb);
@@ -244,30 +255,30 @@ class MenuScene extends Phaser.Scene {
 class GameScene extends Phaser.Scene {
     constructor() { super('Game'); }
     create() {
-        this.stageHeight = 3000 + GameState.currentStage * 400;
-        this.physics.world.setBounds(0, 0, 480, this.stageHeight);
-        this.cameras.main.setBounds(0, 0, 480, this.stageHeight);
+        this.stageHeight = 4500 + GameState.currentStage * 500;
+        this.physics.world.setBounds(0, 0, 720, this.stageHeight);
+        this.cameras.main.setBounds(0, 0, 720, this.stageHeight);
         this.cameras.main.setBackgroundColor('#0a0a14');
         // BG
-        for (let y = 0; y < this.stageHeight; y += 60) {
-            this.add.image(240, y + 30, 'bg_tile').setAlpha(0.5);
+        for (let y = 0; y < this.stageHeight; y += 80) {
+            this.add.image(360, y + 40, 'bg_tile').setAlpha(0.5);
             if (Math.random() < 0.15) {
-                this.add.circle(Phaser.Math.Between(20, 460), y + Phaser.Math.Between(0, 60),
-                    Phaser.Math.Between(1, 2), 0x00ddff, 0.15);
+                this.add.circle(Phaser.Math.Between(20, 700), y + Phaser.Math.Between(0, 80),
+                    Phaser.Math.Between(1, 3), 0x00ddff, 0.15);
             }
         }
-        // Depth indicator lines
-        for (let y = 0; y < this.stageHeight; y += 300) {
-            this.add.text(460, y, `${Math.floor(y / 30)}m`, { fontSize: '9px', color: '#223344' }).setOrigin(1, 0);
+        // Depth indicator
+        for (let y = 0; y < this.stageHeight; y += 400) {
+            this.add.text(700, y, `${Math.floor(y / 30)}m`, { fontSize: '11px', color: '#223344' }).setOrigin(1, 0);
         }
         // Platforms
         this.platforms = this.physics.add.staticGroup();
         this.spikeGroup = this.physics.add.staticGroup();
         this.generatePlatforms();
         // Goal
-        this.goal = this.physics.add.staticImage(240, this.stageHeight - 96, 'goal').setScale(4, 2).refreshBody();
-        this.goal.body.setSize(300, 80).setOffset(-90, -30);
-        this.add.text(240, this.stageHeight - 130, '⬇ GOAL ⬇', { fontSize: '22px', color: '#ffdd00', fontStyle: 'bold' }).setOrigin(0.5);
+        this.goal = this.physics.add.staticImage(360, this.stageHeight - 100, 'goal').setScale(8, 2.5).refreshBody();
+        this.goal.body.setSize(720, 100).setOffset(-270, -35); // Adjust offset for wider body
+        this.add.text(360, this.stageHeight - 155, '⬇ FINAL DEPTH ⬇', { fontSize: '32px', color: '#ffdd00', fontStyle: 'bold' }).setOrigin(0.5);
         // Enemies
         this.enemyGroup = this.physics.add.group();
         this.spawnEnemies();
@@ -276,9 +287,9 @@ class GameScene extends Phaser.Scene {
         // Bullets
         this.bullets = this.physics.add.group();
         // Player
-        this.player = this.physics.add.sprite(240, 80, 'player');
+        this.player = this.physics.add.sprite(360, 80, 'player');
         this.player.setCollideWorldBounds(true);
-        this.player.body.setGravityY(300 * GameState.getFallMod());
+        this.player.body.setGravityY(450 * GameState.getFallMod()); // 1.5x gravity
         this.player.setDepth(10);
         this.player.hp = GameState.hp;
         this.player.invTime = 0;
@@ -295,9 +306,11 @@ class GameScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.xpOrbs, this.collectXP, null, this);
         this.physics.add.overlap(this.bullets, this.enemyGroup, this.onBulletHitEnemy, null, this);
         // Camera
-        this.cameras.main.startFollow(this.player, false, 0.1, 0.3, 0, -150);
+        this.cameras.main.startFollow(this.player, false, 0.1, 0.3, 0, -180);
         this.autoScrollY = 0;
-        this.baseScrollSpeed = 15 + GameState.getDifficulty() * 8 + GameState.currentStage * 2;
+        this.baseScrollSpeed = 22 + GameState.getDifficulty() * 12 + GameState.currentStage * 3;
+        this.dynamicAccel = 0; // Dynamic acceleration
+        this.stageTime = 0; // Time elapsed in stage
         // Controls
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -313,34 +326,33 @@ class GameScene extends Phaser.Scene {
         this.createUI();
         // Stage start text
         const diff = GameState.getDifficultyLabel();
-        const stTxt = this.add.text(240, 360, `Stage ${GameState.currentStage}\n${diff}`, {
-            fontSize: '32px', fontFamily: 'sans-serif', color: '#00ddff', align: 'center', fontStyle: 'bold'
+        const stTxt = this.add.text(360, 540, `Stage ${GameState.currentStage}\n${diff}`, {
+            fontSize: '40px', fontFamily: 'sans-serif', color: '#00ddff', align: 'center', fontStyle: 'bold'
         }).setOrigin(0.5).setScrollFactor(0).setDepth(100);
-        this.tweens.add({ targets: stTxt, alpha: 0, y: 300, duration: 2000, delay: 800, onComplete: () => stTxt.destroy() });
+        this.tweens.add({ targets: stTxt, alpha: 0, y: 480, duration: 2000, delay: 800, onComplete: () => stTxt.destroy() });
+        // Speed lines container
+        this.speedLines = [];
     }
 
     generatePlatforms() {
-        const spacing = Math.max(100, 140 - GameState.getDifficulty() * 10);
-        // Start platform
-        this.addPlatform(240, 120, 3);
-        let y = 120 + spacing;
-        while (y < this.stageHeight - 200) {
-            const x = Phaser.Math.Between(60, 420);
+        const spacing = Math.max(130, 180 - GameState.getDifficulty() * 12);
+        this.addPlatform(360, 140, 3);
+        let y = 140 + spacing;
+        while (y < this.stageHeight - 250) {
+            const x = Phaser.Math.Between(80, 640);
             const spikeChance = 0.18 + GameState.getDifficulty() * 0.06;
             if (Math.random() < spikeChance) {
                 this.addSpike(x, y, Phaser.Math.Between(1, 2));
             } else {
                 this.addPlatform(x, y, Phaser.Math.Between(1, 3));
             }
-            // たまに追加の足場
             if (Math.random() < 0.25) {
-                const x2 = Phaser.Math.Between(60, 420);
-                this.addPlatform(x2, y + Phaser.Math.Between(-15, 15), Phaser.Math.Between(1, 2));
+                const x2 = Phaser.Math.Between(80, 640);
+                this.addPlatform(x2, y + Phaser.Math.Between(-20, 20), Phaser.Math.Between(1, 2));
             }
             y += Phaser.Math.Between(Math.floor(spacing * 0.8), Math.floor(spacing * 1.4));
         }
-        // Goal platform
-        this.addPlatform(240, this.stageHeight - 80, 4);
+        this.addPlatform(360, this.stageHeight - 100, 4);
     }
     addPlatform(x, y, scaleX) {
         const p = this.platforms.create(x, y, 'platform').setScale(scaleX, 1).refreshBody();
@@ -371,7 +383,7 @@ class GameScene extends Phaser.Scene {
             const hunterCount = Math.floor(1 + diff * 1.5);
             for (let i = 0; i < hunterCount; i++) {
                 const hy = Phaser.Math.Between(400, this.stageHeight - 400);
-                const hx = Phaser.Math.Between(40, 440);
+                const hx = Phaser.Math.Between(60, 660);
                 this.createEnemy(hx, hy, true, 'hunter', null);
             }
         }
@@ -423,89 +435,102 @@ class GameScene extends Phaser.Scene {
 
     spawnInterceptor() {
         const diff = GameState.getDifficulty();
-        const camBottom = this.cameras.main.scrollY + 750;
+        const camBottom = this.cameras.main.scrollY + 1100;
         if (camBottom > this.stageHeight - 100) return;
-        const x = Phaser.Math.Between(40, 440);
+        const x = Phaser.Math.Between(60, 660);
         const isRed = Math.random() < (0.4 + diff * 0.1);
         this.createEnemy(x, camBottom, isRed, 'interceptor', null);
     }
 
     setupTouchControls() {
         // Left zone
-        const lz = this.add.rectangle(80, 650, 150, 90, 0x00ddff, 0.08).setScrollFactor(0).setDepth(50).setInteractive();
-        this.add.text(80, 650, '◀', { fontSize: '28px', color: '#00ddff' }).setOrigin(0.5).setScrollFactor(0).setDepth(51).setAlpha(0.5);
+        const lz = this.add.rectangle(120, 980, 200, 100, 0x00ddff, 0.08).setScrollFactor(0).setDepth(50).setInteractive();
+        this.add.text(120, 980, '◀', { fontSize: '34px', color: '#00ddff' }).setOrigin(0.5).setScrollFactor(0).setDepth(51).setAlpha(0.5);
         lz.on('pointerdown', () => this.touchDir = -1); lz.on('pointerup', () => { if (this.touchDir === -1) this.touchDir = 0; });
         lz.on('pointerout', () => { if (this.touchDir === -1) this.touchDir = 0; });
         // Right zone
-        const rz = this.add.rectangle(240, 650, 150, 90, 0x00ddff, 0.08).setScrollFactor(0).setDepth(50).setInteractive();
-        this.add.text(240, 650, '▶', { fontSize: '28px', color: '#00ddff' }).setOrigin(0.5).setScrollFactor(0).setDepth(51).setAlpha(0.5);
+        const rz = this.add.rectangle(360, 980, 200, 100, 0x00ddff, 0.08).setScrollFactor(0).setDepth(50).setInteractive();
+        this.add.text(360, 980, '▶', { fontSize: '34px', color: '#00ddff' }).setOrigin(0.5).setScrollFactor(0).setDepth(51).setAlpha(0.5);
         rz.on('pointerdown', () => this.touchDir = 1); rz.on('pointerup', () => { if (this.touchDir === 1) this.touchDir = 0; });
         rz.on('pointerout', () => { if (this.touchDir === 1) this.touchDir = 0; });
         // Shoot zone (Gun Boot)
-        const az = this.add.rectangle(400, 650, 150, 90, 0xffaa00, 0.12).setScrollFactor(0).setDepth(50).setInteractive();
-        this.add.text(400, 650, '💥', { fontSize: '28px' }).setOrigin(0.5).setScrollFactor(0).setDepth(51).setAlpha(0.7);
+        const az = this.add.rectangle(600, 980, 200, 100, 0xffaa00, 0.12).setScrollFactor(0).setDepth(50).setInteractive();
+        this.add.text(600, 980, '💥', { fontSize: '34px' }).setOrigin(0.5).setScrollFactor(0).setDepth(51).setAlpha(0.7);
         az.on('pointerdown', () => this.touchAtk = true); az.on('pointerup', () => this.touchAtk = false);
     }
 
     createUI() {
         this.uiContainer = this.add.container(0, 0).setScrollFactor(0).setDepth(100);
-        // BG bar
-        this.uiContainer.add(this.add.rectangle(240, 22, 480, 44, 0x000000, 0.75).setScrollFactor(0));
-        // HP
-        this.hpBg = this.add.rectangle(100, 14, 160, 10, 0x333333).setScrollFactor(0);
-        this.hpBar = this.add.rectangle(21, 14, 158, 8, 0x00ff66).setScrollFactor(0).setOrigin(0, 0.5);
-        this.hpText = this.add.text(100, 14, '', { fontSize: '9px', color: '#fff' }).setOrigin(0.5).setScrollFactor(0);
-        this.uiContainer.add([this.hpBg, this.hpBar, this.hpText]);
-        // Ammo display
-        this.ammoText = this.add.text(210, 10, '', { fontSize: '13px', color: '#ffaa00', fontStyle: 'bold' }).setScrollFactor(0);
-        this.uiContainer.add(this.ammoText);
-        // Stage & Level
-        this.stageText = this.add.text(10, 30, '', { fontSize: '10px', color: '#aabbcc' }).setScrollFactor(0);
-        this.levelText = this.add.text(310, 10, '', { fontSize: '11px', color: '#00ddff' }).setScrollFactor(0);
-        this.xpBg = this.add.rectangle(410, 14, 80, 8, 0x222233).setScrollFactor(0);
-        this.xpBar = this.add.rectangle(371, 14, 0, 6, 0x00ddff).setScrollFactor(0).setOrigin(0, 0.5);
-        this.diffText = this.add.text(470, 30, '', { fontSize: '10px', color: '#ffaa00' }).setScrollFactor(0).setOrigin(1, 0);
+        // Top bar (compact)
+        this.uiContainer.add(this.add.rectangle(360, 18, 720, 36, 0x000000, 0.65).setScrollFactor(0));
+        this.stageText = this.add.text(10, 8, '', { fontSize: '12px', color: '#aabbcc' }).setScrollFactor(0);
+        this.levelText = this.add.text(10, 22, '', { fontSize: '11px', color: '#00ddff' }).setScrollFactor(0);
+        this.xpBg = this.add.rectangle(200, 14, 100, 8, 0x222233).setScrollFactor(0);
+        this.xpBar = this.add.rectangle(151, 14, 0, 6, 0x00ddff).setScrollFactor(0).setOrigin(0, 0.5);
+        this.diffText = this.add.text(710, 14, '', { fontSize: '11px', color: '#ffaa00' }).setScrollFactor(0).setOrigin(1, 0.5);
         this.uiContainer.add([this.stageText, this.levelText, this.xpBg, this.xpBar, this.diffText]);
+        // Floating HUD (follows player)
+        this.floatHpBg = this.add.rectangle(0, 0, 50, 6, 0x333333, 0.7).setDepth(15);
+        this.floatHpBar = this.add.rectangle(0, 0, 48, 4, 0x00ff66).setDepth(15).setOrigin(0, 0.5);
+        this.floatAmmoText = this.add.text(0, 0, '', { fontSize: '10px', color: '#ffaa00', fontStyle: 'bold', stroke: '#000', strokeThickness: 2 }).setOrigin(0.5).setDepth(15);
     }
     updateUI() {
         const hpRatio = GameState.hp / GameState.maxHp;
-        this.hpBar.setScale(hpRatio, 1);
-        this.hpBar.setFillStyle(hpRatio > 0.5 ? 0x00ff66 : hpRatio > 0.25 ? 0xffaa00 : 0xff3333);
-        this.hpText.setText(`${GameState.hp}/${GameState.maxHp}`);
-        // Ammo
+        // Floating HUD - follows player
+        const px = this.player.x, py = this.player.y - 40;
+        this.floatHpBg.setPosition(px, py);
+        this.floatHpBar.setPosition(px - 24, py);
+        this.floatHpBar.setScale(hpRatio, 1);
+        this.floatHpBar.setFillStyle(hpRatio > 0.5 ? 0x00ff66 : hpRatio > 0.25 ? 0xffaa00 : 0xff3333);
+        // Ammo dots near player
         let ammoStr = '';
         for (let i = 0; i < this.maxAmmo; i++) ammoStr += i < this.ammo ? '●' : '○';
-        this.ammoText.setText(`弾 ${ammoStr}`);
-        this.ammoText.setColor(this.ammo > 0 ? '#ffaa00' : '#ff3333');
-        this.stageText.setText(`Stage ${GameState.currentStage} | ${GameState.getDifficultyLabel()}`);
-        this.levelText.setText(`Lv.${GameState.level}`);
+        this.floatAmmoText.setPosition(px, py - 10);
+        this.floatAmmoText.setText(ammoStr);
+        this.floatAmmoText.setColor(this.ammo > 0 ? '#ffaa00' : '#ff3333');
+        // Top bar
+        this.stageText.setText(`Stage ${GameState.currentStage} | ${GameState.getDifficultyLabel()} | HP:${GameState.hp}/${GameState.maxHp}`);
+        this.levelText.setText(`Lv.${GameState.level} | ATK:${GameState.getAtk()}`);
         const xpRatio = GameState.xp / GameState.xpToNext;
-        this.xpBar.setScale(Math.min(xpRatio * 78, 78), 1);
-        this.xpBar.width = xpRatio * 78;
-        this.diffText.setText(`ATK:${GameState.getAtk()}`);
+        this.xpBar.width = xpRatio * 98;
+        this.xpBar.setScale(Math.min(xpRatio * 98, 98), 1);
+        this.diffText.setText(`弾:${this.ammo}/${this.maxAmmo}`);
     }
 
     update(time, delta) {
         if (this.goalReached) return;
         const dt = delta / 1000;
+        this.stageTime += dt;
+        // Dynamic acceleration
+        this.dynamicAccel = Math.min(this.stageTime * 0.4, 20);
+        const currentScrollSpeed = this.baseScrollSpeed + this.dynamicAccel;
         // Auto scroll
-        this.autoScrollY += this.baseScrollSpeed * dt;
+        this.autoScrollY += currentScrollSpeed * dt;
         const camY = this.cameras.main.scrollY;
         if (camY < this.autoScrollY) this.cameras.main.scrollY = this.autoScrollY;
         // Death by scroll
         if (this.player.y < this.cameras.main.scrollY - 30) { this.playerDeath(); return; }
+        // Speed lines effect
+        const fallSpeed = Math.abs(this.player.body.velocity.y);
+        if (fallSpeed > 250) this.spawnSpeedLines(fallSpeed);
         // Ground check for ammo reload
         const onGround = this.player.body.blocked.down || this.player.body.touching.down;
         if (onGround && !this.wasOnGround) {
             this.reloadAmmo();
         }
         this.wasOnGround = onGround;
-        // Movement
-        let vx = 0;
-        const spd = GameState.getSpd();
-        if (this.cursors.left.isDown || this.keyA.isDown || this.touchDir === -1) { vx = -spd; this.player.facingRight = false; this.player.setFlipX(true); }
-        else if (this.cursors.right.isDown || this.keyD.isDown || this.touchDir === 1) { vx = spd; this.player.facingRight = true; this.player.setFlipX(false); }
-        this.player.setVelocityX(vx);
+        // Player movement
+        let moveTarget = 0;
+        if (this.cursors.left.isDown || this.keyA.isDown) moveTarget = -1;
+        else if (this.cursors.right.isDown || this.keyD.isDown) moveTarget = 1;
+        else if (this.touchDir !== 0) moveTarget = this.touchDir;
+
+        const moveSpeed = 450 + (GameState.hasEffect('speedUp') ? 80 : 0); // 300 -> 450
+        this.player.setVelocityX(moveTarget * moveSpeed);
+        if (moveTarget !== 0) {
+            this.player.facingRight = moveTarget > 0;
+            this.player.setFlipX(moveTarget < 0);
+        }
         // Gun Boot shooting (Space or touch) - single press
         this.shootCooldown -= dt;
         const spaceDown = this.keySpace.isDown || this.touchAtk;
@@ -591,23 +616,60 @@ class GameScene extends Phaser.Scene {
         this.shootCooldown = 0.15;
         const atk = GameState.getAtk();
         const hits = GameState.hasEffect('doubleHit') ? 2 : 1;
-        // Create bullet(s) going downward
         for (let h = 0; h < hits; h++) {
-            const offsetX = hits > 1 ? (h === 0 ? -6 : 6) : 0;
-            const b = this.bullets.create(this.player.x + offsetX, this.player.y + 18, 'bullet');
-            b.setVelocityY(400);
-            b.body.setGravityY(-300); // Cancel world gravity for bullets
+            const offsetX = hits > 1 ? (h === 0 ? -8 : 8) : 0;
+            const b = this.bullets.create(this.player.x + offsetX, this.player.y + 28, 'bullet');
+            b.setVelocityY(500);
+            b.body.setGravityY(-450);
             b.damage = atk;
             b.setDepth(5);
         }
-        // Recoil - slow down falling / push upward
-        const recoilForce = -120 - (GameState.hasEffect('antiGravity') ? 40 : 0);
+        // Recoil
+        const recoilForce = -160 - (GameState.hasEffect('antiGravity') ? 50 : 0);
         this.player.setVelocityY(Math.min(this.player.body.velocity.y + recoilForce, recoilForce));
-        // Muzzle flash effect
-        const flash = this.add.image(this.player.x, this.player.y + 20, 'muzzle_flash').setScale(1.5).setAlpha(0.9).setDepth(9);
-        this.tweens.add({ targets: flash, scale: 0.3, alpha: 0, duration: 120, onComplete: () => flash.destroy() });
-        // Screen shake (subtle)
-        this.cameras.main.shake(40, 0.003);
+        // Muzzle flash
+        const flash = this.add.image(this.player.x, this.player.y + 30, 'muzzle_flash').setScale(2).setAlpha(0.9).setDepth(9);
+        this.tweens.add({ targets: flash, scale: 0.4, alpha: 0, duration: 100, onComplete: () => flash.destroy() });
+        // Shell casing ejection
+        const shellDir = this.player.facingRight ? 1 : -1;
+        for (let i = 0; i < 2; i++) {
+            const shell = this.add.image(this.player.x + shellDir * 10, this.player.y + 20, 'shell').setDepth(8);
+            this.tweens.add({
+                targets: shell,
+                x: shell.x + shellDir * Phaser.Math.Between(15, 40),
+                y: shell.y + Phaser.Math.Between(-30, -10),
+                angle: Phaser.Math.Between(90, 360),
+                alpha: 0, duration: 500,
+                onComplete: () => shell.destroy()
+            });
+        }
+        // Fire sparks
+        for (let i = 0; i < 4; i++) {
+            const sp = this.add.image(this.player.x + Phaser.Math.Between(-8, 8), this.player.y + 26, 'spark').setDepth(8);
+            this.tweens.add({
+                targets: sp,
+                x: sp.x + Phaser.Math.Between(-20, 20),
+                y: sp.y + Phaser.Math.Between(15, 45),
+                alpha: 0, scale: 0, duration: Phaser.Math.Between(150, 300),
+                onComplete: () => sp.destroy()
+            });
+        }
+        // Speed lines on recoil
+        this.spawnSpeedLines(400);
+        // Screen shake
+        this.cameras.main.shake(50, 0.005);
+    }
+
+    spawnSpeedLines(speed) {
+        const intensity = Math.min((speed - 200) / 400, 1);
+        const count = Math.floor(1 + intensity * 3);
+        for (let i = 0; i < count; i++) {
+            const side = Math.random() < 0.5 ? 0 : 1;
+            const x = side === 0 ? Phaser.Math.Between(10, 80) : Phaser.Math.Between(640, 710);
+            const lineY = this.cameras.main.scrollY + Phaser.Math.Between(50, 1030);
+            const line = this.add.image(x, lineY, 'speed_line').setAlpha(0.2 + intensity * 0.4).setScale(1, 1 + intensity * 2).setDepth(2);
+            this.tweens.add({ targets: line, y: line.y - 100, alpha: 0, duration: 200, onComplete: () => line.destroy() });
+        }
     }
 
     reloadAmmo() {
@@ -622,7 +684,26 @@ class GameScene extends Phaser.Scene {
     }
 
     onLandPlatform(player, platform) {
-        // Reload on landing (handled in update via ground check)
+        if (!this.wasOnGround) {
+            this.spawnLandingEffect(player.x, player.y + 24);
+            // Dynamic HUD bounce on landing
+            this.tweens.add({ targets: [this.floatHpBg, this.floatHpBar, this.floatAmmoText], y: '+=5', duration: 50, yoyo: true });
+        }
+    }
+
+    spawnLandingEffect(x, y) {
+        for (let i = 0; i < 8; i++) {
+            const p = this.add.circle(x + Phaser.Math.Between(-15, 15), y, Phaser.Math.Between(2, 5), 0x8899aa, 0.6);
+            this.tweens.add({
+                targets: p,
+                x: p.x + (p.x < x ? -Phaser.Math.Between(20, 40) : Phaser.Math.Between(20, 40)),
+                y: p.y - Phaser.Math.Between(5, 15),
+                alpha: 0,
+                scale: 0.5,
+                duration: Phaser.Math.Between(300, 500),
+                onComplete: () => p.destroy()
+            });
+        }
     }
 
     onBulletHitEnemy(bullet, enemy) {
@@ -647,11 +728,19 @@ class GameScene extends Phaser.Scene {
         const orb = this.xpOrbs.create(e.x, e.y, 'xp_orb');
         orb.body.setGravityY(-250);
         this.tweens.add({ targets: orb, alpha: 0, duration: 3000, onComplete: () => orb.destroy() });
-        // Death particles
-        for (let i = 0; i < 6; i++) {
-            const p = this.add.circle(e.x + Phaser.Math.Between(-10, 10), e.y + Phaser.Math.Between(-10, 10), 3, e.eData.color);
-            this.tweens.add({ targets: p, x: p.x + Phaser.Math.Between(-30, 30), y: p.y - Phaser.Math.Between(10, 40), alpha: 0, duration: 400, onComplete: () => p.destroy() });
+        // Enhanced Death particles
+        for (let i = 0; i < 12; i++) {
+            const p = this.add.circle(e.x, e.y, Phaser.Math.Between(3, 6), e.eData.color);
+            const angle = Phaser.Math.Between(0, 360) * (Math.PI / 180);
+            const speed = Phaser.Math.Between(100, 250);
+            this.physics.add.existing(p);
+            p.body.setVelocity(Math.cos(angle) * speed, Math.sin(angle) * speed);
+            this.tweens.add({ targets: p, alpha: 0, scale: 0, duration: Phaser.Math.Between(400, 700), onComplete: () => p.destroy() });
         }
+        // Ghost effect
+        const ghost = this.add.image(e.x, e.y, e.texture.key).setTint(0xffffff).setAlpha(0.6);
+        this.tweens.add({ targets: ghost, scale: 2, alpha: 0, duration: 200, onComplete: () => ghost.destroy() });
+
         e.destroy();
     }
     collectXP(player, orb) { orb.destroy(); }
@@ -670,10 +759,8 @@ class GameScene extends Phaser.Scene {
                 if (this.player.invTime > 0) return;
                 const dmg = enemy.eData.damage;
                 GameState.takeDamage(dmg);
-                this.player.invTime = 1.0;
+                this.playerHitVFX();
                 this.player.setVelocityY(-200);
-                this.cameras.main.shake(100, 0.015);
-                this.cameras.main.flash(100, 255, 0, 0);
                 if (GameState.hp <= 0) this.playerDeath();
             } else {
                 // White enemy - stomp to kill + reload!
@@ -694,23 +781,70 @@ class GameScene extends Phaser.Scene {
             if (actual === -dmg) {
                 enemy.hp -= dmg; if (enemy.hp <= 0) this.killEnemy(enemy);
             }
-            this.player.invTime = 1.0;
-            this.cameras.main.shake(100, 0.01);
+            this.playerHitVFX();
             const dir = player.x < enemy.x ? -1 : 1;
-            player.setVelocity(dir * 150, -100);
+            player.setVelocity(dir * 250, -150);
             if (GameState.hp <= 0) this.playerDeath();
         }
+    }
+
+    playerHitVFX() {
+        this.player.invTime = 1.0;
+        this.cameras.main.shake(150, 0.012);
+        this.cameras.main.flash(100, 255, 50, 50, true);
+
+        // Flash red
+        this.player.setTint(0xff0000);
+        const flashTimer = this.time.addEvent({
+            delay: 100,
+            repeat: 9,
+            callback: () => {
+                if (this.player.isTinted) this.player.clearTint();
+                else this.player.setTint(0xff0000);
+            }
+        });
+        this.time.delayedCall(1000, () => {
+            flashTimer.remove();
+            this.player.clearTint();
+        });
+
+        // Hit particles
+        for (let i = 0; i < 10; i++) {
+            const p = this.add.image(this.player.x, this.player.y, 'spark').setTint(0xffffff);
+            const ang = Phaser.Math.Between(0, 360) * (Math.PI / 180);
+            const spd = Phaser.Math.Between(150, 350);
+            this.physics.add.existing(p);
+            p.body.setVelocity(Math.cos(ang) * spd, Math.sin(ang) * spd);
+            this.tweens.add({ targets: p, alpha: 0, scale: 0, duration: 400, onComplete: () => p.destroy() });
+        }
+
+        // HUD impact
+        this.tweens.add({ targets: [this.floatHpBg, this.floatHpBar, this.floatAmmoText], x: '+=10', duration: 50, yoyo: true, repeat: 3 });
     }
 
     onGoal(player, goal) {
         if (this.goalReached) return;
         this.goalReached = true;
+
+        // Celebratory particles
+        for (let i = 0; i < 50; i++) {
+            const p = this.add.circle(Phaser.Math.Between(0, 720), this.stageHeight - 50, Phaser.Math.Between(5, 12),
+                Phaser.Utils.Array.GetRandom([0x00ddff, 0xffdd00, 0xffffff, 0x00ff88]));
+            this.physics.add.existing(p);
+            p.body.setVelocity(Phaser.Math.Between(-200, 200), Phaser.Math.Between(-400, -800));
+            p.body.setGravityY(400);
+            this.tweens.add({ targets: p, alpha: 0, duration: Phaser.Math.Between(1000, 2000), onComplete: () => p.destroy() });
+        }
+
+        // Camera zoom in on goal
+        this.cameras.main.zoomTo(1.2, 500);
+
         // Stage heal effect
         if (GameState.hasEffect('stageHeal')) {
             GameState.hp = Math.min(GameState.maxHp, GameState.hp + Math.floor(GameState.getEffectVal('stageHeal')));
         }
         this.cameras.main.flash(500, 255, 221, 0);
-        this.time.delayedCall(600, () => {
+        this.time.delayedCall(1000, () => {
             GameState.currentStage++;
             this.scene.start('ItemSelect');
         });
@@ -720,10 +854,8 @@ class GameScene extends Phaser.Scene {
         if (this.player.invTime > 0) return;
         const dmg = 15 + GameState.getDifficulty() * 5;
         GameState.takeDamage(dmg);
-        this.player.invTime = 1.0;
-        this.player.setVelocityY(-180);
-        this.cameras.main.shake(80, 0.008);
-        this.cameras.main.flash(150, 255, 50, 50);
+        this.playerHitVFX();
+        this.player.setVelocityY(-250);
         if (GameState.hp <= 0) this.playerDeath();
     }
 
@@ -753,20 +885,20 @@ class ItemSelectScene extends Phaser.Scene {
     constructor() { super('ItemSelect'); }
     create() {
         this.cameras.main.setBackgroundColor('#0a0a14');
-        this.add.text(240, 60, `Stage ${GameState.currentStage - 1} クリア！`, {
-            fontSize: '28px', color: '#ffdd00', fontStyle: 'bold'
+        this.add.text(360, 80, `Stage ${GameState.currentStage - 1} クリア！`, {
+            fontSize: '34px', color: '#ffdd00', fontStyle: 'bold'
         }).setOrigin(0.5);
-        this.add.text(240, 100, 'アイテムを1つ選択してください', { fontSize: '14px', color: '#8899aa' }).setOrigin(0.5);
+        this.add.text(360, 130, 'アイテムを1つ選択してください', { fontSize: '16px', color: '#8899aa' }).setOrigin(0.5);
         const items = GameState.rollItems(3);
         items.forEach((item, i) => {
-            const x = 90 + i * 150, y = 300;
+            const x = 130 + i * 230, y = 420;
             const rc = RARITY_CONFIG[item.rarity];
             const col = Phaser.Display.Color.HexStringToColor(rc.color).color;
-            const card = this.add.rectangle(x, y, 130, 220, 0x111122, 0.9).setStrokeStyle(2, col).setInteractive({ useHandCursor: true });
-            this.add.text(x, y - 85, item.icon, { fontSize: '36px' }).setOrigin(0.5);
-            this.add.text(x, y - 45, item.name, { fontSize: '13px', color: rc.color, fontStyle: 'bold', wordWrap: { width: 120 }, align: 'center' }).setOrigin(0.5);
-            this.add.text(x, y - 15, rc.label, { fontSize: '10px', color: rc.color }).setOrigin(0.5);
-            this.add.text(x, y + 15, item.description, { fontSize: '10px', color: '#aabbcc', wordWrap: { width: 110 }, align: 'center' }).setOrigin(0.5);
+            const card = this.add.rectangle(x, y, 190, 300, 0x111122, 0.9).setStrokeStyle(2, col).setInteractive({ useHandCursor: true });
+            this.add.text(x, y - 110, item.icon, { fontSize: '44px' }).setOrigin(0.5);
+            this.add.text(x, y - 60, item.name, { fontSize: '15px', color: rc.color, fontStyle: 'bold', wordWrap: { width: 170 }, align: 'center' }).setOrigin(0.5);
+            this.add.text(x, y - 25, rc.label, { fontSize: '12px', color: rc.color }).setOrigin(0.5);
+            this.add.text(x, y + 15, item.description, { fontSize: '12px', color: '#aabbcc', wordWrap: { width: 160 }, align: 'center' }).setOrigin(0.5);
             card.on('pointerover', () => card.setFillStyle(col, 0.2));
             card.on('pointerout', () => card.setFillStyle(0x111122, 0.9));
             card.on('pointerdown', () => {
@@ -777,13 +909,13 @@ class ItemSelectScene extends Phaser.Scene {
         });
         // Current items display
         if (GameState.items.length > 0) {
-            this.add.text(240, 460, '所持アイテム', { fontSize: '12px', color: '#667788' }).setOrigin(0.5);
+            this.add.text(360, 640, '所持アイテム', { fontSize: '14px', color: '#667788' }).setOrigin(0.5);
             const itemStr = GameState.items.map(i => i.icon + i.name).join('  ');
-            this.add.text(240, 485, itemStr, { fontSize: '11px', color: '#556677', wordWrap: { width: 440 }, align: 'center' }).setOrigin(0.5);
+            this.add.text(360, 670, itemStr, { fontSize: '13px', color: '#556677', wordWrap: { width: 660 }, align: 'center' }).setOrigin(0.5);
         }
         // Stats
-        this.add.text(240, 560, `Lv.${GameState.level} | HP:${GameState.hp}/${GameState.maxHp} | ATK:${GameState.getAtk()} | Luck:${GameState.luck}`, {
-            fontSize: '12px', color: '#556677'
+        this.add.text(360, 780, `Lv.${GameState.level} | HP:${GameState.hp}/${GameState.maxHp} | ATK:${GameState.getAtk()} | Luck:${GameState.luck}`, {
+            fontSize: '14px', color: '#556677'
         }).setOrigin(0.5);
     }
 }
@@ -793,27 +925,27 @@ class GameOverScene extends Phaser.Scene {
     constructor() { super('GameOver'); }
     create() {
         this.cameras.main.setBackgroundColor('#0a0a14');
-        this.add.text(240, 120, 'GAME OVER', { fontSize: '48px', color: '#ff3344', fontStyle: 'bold', fontFamily: 'Orbitron, sans-serif' }).setOrigin(0.5).setShadow(0, 0, '#ff0000', 8);
-        this.add.text(240, 200, `到達ステージ: ${GameState.currentStage}`, { fontSize: '18px', color: '#aabbcc' }).setOrigin(0.5);
-        this.add.text(240, 235, `プレイヤーレベル: ${GameState.level}`, { fontSize: '16px', color: '#00ddff' }).setOrigin(0.5);
-        this.add.text(240, 265, `難易度: ${GameState.getDifficultyLabel()}`, { fontSize: '14px', color: '#ffaa00' }).setOrigin(0.5);
-        this.add.text(240, 295, `モード: ${GameState.mode}`, { fontSize: '14px', color: '#888' }).setOrigin(0.5);
+        this.add.text(360, 180, 'GAME OVER', { fontSize: '56px', color: '#ff3344', fontStyle: 'bold', fontFamily: 'Orbitron, sans-serif' }).setOrigin(0.5).setShadow(0, 0, '#ff0000', 10);
+        this.add.text(360, 300, `到達ステージ: ${GameState.currentStage}`, { fontSize: '22px', color: '#aabbcc' }).setOrigin(0.5);
+        this.add.text(360, 340, `プレイヤーレベル: ${GameState.level}`, { fontSize: '18px', color: '#00ddff' }).setOrigin(0.5);
+        this.add.text(360, 380, `難易度: ${GameState.getDifficultyLabel()}`, { fontSize: '16px', color: '#ffaa00' }).setOrigin(0.5);
+        this.add.text(360, 415, `モード: ${GameState.mode}`, { fontSize: '16px', color: '#888' }).setOrigin(0.5);
         const retryLabel = GameState.mode === 'HARD' ? 'リトライ（全リセット）' : 'リトライ（レベル維持）';
         // Retry button
-        this.createBtn(240, 400, retryLabel, '#00cc88', () => {
+        this.createBtn(360, 560, retryLabel, '#00cc88', () => {
             GameState.reset(GameState.mode === 'HARD');
             this.scene.start('Game');
         });
         // Menu button
-        this.createBtn(240, 470, 'タイトルへ戻る', '#5588ff', () => {
+        this.createBtn(360, 650, 'タイトルへ戻る', '#5588ff', () => {
             GameState.reset(GameState.mode === 'HARD');
             this.scene.start('Menu');
         });
     }
     createBtn(x, y, text, color, cb) {
         const c = Phaser.Display.Color.HexStringToColor(color).color;
-        const bg = this.add.rectangle(x, y, 280, 48, c, 0.15).setStrokeStyle(2, c).setInteractive({ useHandCursor: true });
-        this.add.text(x, y, text, { fontSize: '18px', color: color, fontStyle: 'bold' }).setOrigin(0.5);
+        const bg = this.add.rectangle(x, y, 340, 56, c, 0.15).setStrokeStyle(2, c).setInteractive({ useHandCursor: true });
+        this.add.text(x, y, text, { fontSize: '20px', color: color, fontStyle: 'bold' }).setOrigin(0.5);
         bg.on('pointerover', () => bg.setFillStyle(c, 0.3));
         bg.on('pointerout', () => bg.setFillStyle(c, 0.15));
         bg.on('pointerdown', cb);
@@ -825,37 +957,37 @@ class CollectionScene extends Phaser.Scene {
     constructor() { super('Collection'); }
     create() {
         this.cameras.main.setBackgroundColor('#0a0a14');
-        this.add.text(240, 35, '📖 アイテム図鑑', { fontSize: '24px', color: '#00ddff', fontStyle: 'bold' }).setOrigin(0.5);
+        this.add.text(360, 45, '📖 アイテム図鑑', { fontSize: '28px', color: '#00ddff', fontStyle: 'bold' }).setOrigin(0.5);
         const collected = GameState.collection.length;
-        this.add.text(240, 65, `${collected} / ${ITEMS_DATA.length} 収集済み`, { fontSize: '13px', color: '#667788' }).setOrigin(0.5);
+        this.add.text(360, 80, `${collected} / ${ITEMS_DATA.length} 収集済み`, { fontSize: '15px', color: '#667788' }).setOrigin(0.5);
         // Scroll container
-        const startY = 95;
-        const itemH = 55;
+        const startY = 110;
+        const itemH = 65;
         ITEMS_DATA.forEach((item, idx) => {
             const y = startY + idx * itemH;
             const owned = GameState.collection.includes(item.id);
             const rc = RARITY_CONFIG[item.rarity];
             const col = owned ? Phaser.Display.Color.HexStringToColor(rc.color).color : 0x333344;
-            this.add.rectangle(240, y + 20, 440, 48, 0x111122, 0.8).setStrokeStyle(1, col);
+            this.add.rectangle(360, y + 25, 660, 56, 0x111122, 0.8).setStrokeStyle(1, col);
             if (owned) {
-                this.add.text(35, y + 12, item.icon, { fontSize: '22px' });
-                this.add.text(65, y + 8, item.name, { fontSize: '13px', color: rc.color, fontStyle: 'bold' });
-                this.add.text(65, y + 26, item.description, { fontSize: '10px', color: '#889999' });
-                this.add.text(430, y + 8, rc.label, { fontSize: '9px', color: rc.color }).setOrigin(1, 0);
+                this.add.text(50, y + 15, item.icon, { fontSize: '26px' });
+                this.add.text(90, y + 10, item.name, { fontSize: '15px', color: rc.color, fontStyle: 'bold' });
+                this.add.text(90, y + 30, item.description, { fontSize: '12px', color: '#889999' });
+                this.add.text(660, y + 10, rc.label, { fontSize: '11px', color: rc.color }).setOrigin(1, 0);
             } else {
-                this.add.text(35, y + 12, '❓', { fontSize: '22px' });
-                this.add.text(65, y + 16, '？？？', { fontSize: '13px', color: '#444455' });
+                this.add.text(50, y + 15, '❓', { fontSize: '26px' });
+                this.add.text(90, y + 20, '？？？', { fontSize: '15px', color: '#444455' });
             }
         });
         // Enable camera scroll for long list
-        const totalH = startY + ITEMS_DATA.length * itemH + 60;
-        this.cameras.main.setBounds(0, 0, 480, Math.max(720, totalH));
+        const totalH = startY + ITEMS_DATA.length * itemH + 80;
+        this.cameras.main.setBounds(0, 0, 720, Math.max(1080, totalH));
         this.input.on('pointermove', (p) => {
             if (p.isDown) this.cameras.main.scrollY -= (p.y - p.prevPosition.y);
         });
         // Back button
-        const backBtn = this.add.text(240, totalH - 30, '← タイトルへ戻る', {
-            fontSize: '16px', color: '#5588ff', fontStyle: 'bold'
+        const backBtn = this.add.text(360, totalH - 40, '← タイトルへ戻る', {
+            fontSize: '18px', color: '#5588ff', fontStyle: 'bold'
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
         backBtn.on('pointerdown', () => this.scene.start('Menu'));
     }
@@ -864,12 +996,12 @@ class CollectionScene extends Phaser.Scene {
 // --- Phaser Config ---
 const config = {
     type: Phaser.AUTO,
-    width: 480, height: 720,
+    width: 720, height: 1080,
     parent: 'game-container',
     backgroundColor: '#0a0a14',
     physics: {
         default: 'arcade',
-        arcade: { gravity: { y: 300 }, debug: false }
+        arcade: { gravity: { y: 450 }, debug: false }
     },
     scale: {
         mode: Phaser.Scale.FIT,
