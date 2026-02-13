@@ -1,6 +1,3 @@
-// --- 定数定義 ---
-const DIFFICULTY_LEVELS = ['C', 'B', 'A', 'S'];
-
 // --- ゲーム状態管理 ---
 const GameState = {
     mode: 'NORMAL', level: 1, xp: 0, xpToNext: 100, luck: 0, score: 0,
