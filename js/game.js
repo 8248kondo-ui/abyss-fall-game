@@ -228,7 +228,7 @@ class MenuScene extends Phaser.Scene {
         this.add.text(cx, 465, '死亡時：アイテム消失、レベル維持', { fontSize: '13px', color: '#558866' }).setOrigin(0.5);
         this.createBtn(cx, 540, 'HARD モード', '#ff4466', () => { GameState.mode = 'HARD'; GameState.reset(true); this.scene.start('Game'); });
         this.add.text(cx, 585, '死亡時：全てリセット', { fontSize: '13px', color: '#885566' }).setOrigin(0.5);
-        this.createBtn(cx, 700, '📖 図鑑', '#8866ff', () => { this.scene.start('Collection'); });
+        this.createBtn(cx, 700, '📖 図鑑 (準備中)', '#8866ff', () => { /* this.scene.start('Collection'); */ });
         // Info
         this.add.text(cx, 880, '操作: ← → 移動 / SPACE ガンブーツ発射', { fontSize: '14px', color: '#445566' }).setOrigin(0.5);
         this.add.text(cx, 910, '白い敵は踏んで倒せる / 赤い敵は弾で倒す', { fontSize: '13px', color: '#445566' }).setOrigin(0.5);
@@ -1068,6 +1068,6 @@ const config = {
         width: 720,
         height: 1280
     },
-    scene: [BootScene, MenuScene, GameScene, ItemSelectScene, GameOverScene, CollectionScene]
+    scene: [BootScene, MenuScene, GameScene, ItemSelectScene, GameOverScene]
 };
 const game = new Phaser.Game(config);
